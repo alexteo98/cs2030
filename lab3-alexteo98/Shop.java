@@ -28,11 +28,12 @@ class Shop {
    * @param timings Array used to store arrival and service time of customers.
    */
 
-  public Shop(int noOfCustomers, int noOfCounters, double[][] timings) { 
-    this.allCounters = createCounters(noOfCounters);
+  public Shop(int noOfCustomers, int noOfCounters,int counterQueueLength, int shopQueueLength,  double[][] timings) { 
+    this.allCounters = createCounters(noOfCounters, counterQueueLength);
     this.allCustomers = createCustomers(noOfCustomers, timings);
     this.noOfCustomers = noOfCustomers;
     this.noOfCounters = noOfCounters;
+    this.q=new Queue<Customer>(shopQueueLength);
   }
 
   // ----- Getter and Setters ---------------------
@@ -47,15 +48,6 @@ class Shop {
   }
 
   /**
-   * Sets the queue object of the shop
-   *
-   * @param q Queue object to link to the shop.
-   */
-  public void setQueue(Queue q) { 
-    this.q = q;
-  }
-
-  /**
    * Gets the array of Customers in the shop.
    *
    * @return The array containing all customer objects in the shop.
@@ -65,6 +57,32 @@ class Shop {
   }
 
   // ----- Methods -----------------------
+
+  public Queue chooseQueue() { 
+    Counter ctr=allCounters[0];
+    for (int i=1;i<allCounters.length;i++) { 
+      if (ctr.compareTo(allCounters[i])>-1) { 
+        ctr=allCounters[i];
+      }else{}
+    }
+    if (ctr.getQueue().isFull()) { 
+        return this.q;
+    }
+    return ctr.getQueue();
+  }
+
+  public boolean isShopFull() { 
+     
+      for (int i=0;i<allCounters.length;i++) { 
+          if (!allCounters[i].isFull()) { 
+              return false;
+          }
+      }
+
+ return this.q.isFull();
+
+  }
+
   /**
    * Gets a counter object that is available
    *
@@ -100,10 +118,10 @@ class Shop {
    *
    * @return An array of counters belonging to the shop.
    */
-  private Counter[] createCounters(int noOfCounters) {
+  private Counter[] createCounters(int noOfCounters, int counterQueueLength) {
     Counter[] allCounters = new Counter[noOfCounters];
     for (int i = 0; i < noOfCounters; i++) { 
-      allCounters[i] = new Counter();
+      allCounters[i] = new Counter(counterQueueLength);
     }
     return allCounters;
   }

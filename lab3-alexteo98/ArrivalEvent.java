@@ -37,7 +37,7 @@ class ArrivalEvent extends Event {
     if (shop.counterAvailable()) { 
       return serve();
     } else {
-      if (shop.getQueue().isFull()) { 
+      if (shop.isShopFull()) { 
         return depart();
       } else { 
         return joinQ();
@@ -51,7 +51,7 @@ class ArrivalEvent extends Event {
    * @return Empty event.
    */
   private Event[] joinQ() { 
-    return new Event[] {new JoinQueueEvent(this.c, this.shop.getQueue())};
+    return new Event[] {new JoinQueueEvent(this.c, this.shop.chooseQueue())};
   }
 
   /**
@@ -59,9 +59,10 @@ class ArrivalEvent extends Event {
    *
    * @return A Service Begin Event of the customer and the shop.
    */
-  private Event[] serve() { 
-    c.setCounter(shop.getAvailableCounter());
-    return new Event[] { new ServiceBeginEvent(this.c, this.shop)};
+  private Event[] serve() {
+    Counter ctr=shop.getAvailableCounter();
+    c.setCounter(ctr);
+    return new Event[] { new ServiceBeginEvent(this.c, this.shop, ctr)};
   }
 
   /**

@@ -24,7 +24,8 @@ class ShopSimulation extends Simulation {
   private Queue q;
 
   /** Max length of queue allowed in shop.*/
-  private int queueLen;
+  private int shopQueueLength;
+  private int counterQueueLength;
 
   /** Number of Customers to be instantiated. */
   private int noOfCustomers = 0;
@@ -50,14 +51,13 @@ class ShopSimulation extends Simulation {
 
     this.noOfCustomers = sc.nextInt();
     this.noOfCounters = sc.nextInt();
-    this.queueLen = sc.nextInt();
+    this.counterQueueLength=sc.nextInt();
+    this.shopQueueLength = sc.nextInt();
 
     initEvents = new Event[noOfCustomers];
 
     createTimings(sc);
-    q = new Queue(queueLen);
-    shop = new Shop(noOfCustomers, noOfCounters, timings);
-    shop.setQueue(q);
+    shop = new Shop(this.noOfCustomers, this.noOfCounters, this.shopQueueLength, this.counterQueueLength, this.timings);
     populateEvents();
   }
 
@@ -83,13 +83,12 @@ class ShopSimulation extends Simulation {
    *
    * @return An array of Arrival and Service Time.
    */
-  private double[][] createTimings(Scanner sc) { 
+  private void createTimings(Scanner sc) { 
     timings = new double[noOfCustomers][2];
     for (int i = 0; i < noOfCustomers; i++) { 
       timings[i][0] = sc.nextDouble();
       timings[i][1] = sc.nextDouble();
     }
-    return timings;
   }
 
   /**

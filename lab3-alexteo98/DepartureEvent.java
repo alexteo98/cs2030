@@ -37,15 +37,8 @@ class DepartureEvent extends Event {
   }
 
   public Event[] simulate() { 
-    Queue q = this.shop.getQueue();
-    if (q.isEmpty()) { 
-      return emptyEvent;
-    } else if (!shop.counterAvailable()) { 
-      return emptyEvent;
-    } else {
-      return nextService();
-    }
-  }
+     return emptyEvent;
+ }
 
   /**
    * Starts another service to serve next customer is queue.
@@ -54,11 +47,12 @@ class DepartureEvent extends Event {
    * Assigns the current counter to the upcoming Customer.
    *
    * @return new Service Begin Event for next customer in queue.
-   */
+   *
   private Event[] nextService() { 
     Customer nextCustomer = (Customer) this.shop.getQueue().deq();
     nextCustomer.setTime(super.getTime());
     nextCustomer.setCounter(this.c.getCounter());
     return new Event[] {new ServiceBeginEvent(nextCustomer, this.shop) };    
   }
+  */
 }

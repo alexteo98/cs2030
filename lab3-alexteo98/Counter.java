@@ -21,7 +21,7 @@ class Counter implements Comparable<Counter> {
   private Customer currentCustomer;
 
   /** Queue for each individual Counter. */
-  private Queue<Counter> q;
+  private Queue<Customer> q;
 
   // ----- Constructors -----------------------------
   /**
@@ -30,9 +30,10 @@ class Counter implements Comparable<Counter> {
    * Initialise counter ID for current Counter object.
    * Sets up counter ID for next instantiation of Counter object.
    */
-  public Counter() { 
+  public Counter(int counterQueueLength) { 
     counterID = lastCounterID;
     lastCounterID++;
+    this.q=new Queue<Customer>(counterQueueLength);
   }
 
   // ----- Getters and Setters ----------------------
@@ -86,6 +87,10 @@ class Counter implements Comparable<Counter> {
   public void releaseCounter() { 
     this.available = true;
     this.currentCustomer = null;
+  }
+
+  public boolean isFull() { 
+      return (this.q.isFull() && this.available);
   }
 
   /**

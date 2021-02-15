@@ -104,6 +104,18 @@ class Counter implements Comparable<Counter> {
 
   @Override
   public int compareTo(Counter c) { 
+    
+    if(this.q.length()<c.getQueue().length()) { 
+        return -1;
+    }else if (this.q.length()>c.getQueue().length()) { 
+        return 1;
+    }else { 
+        if  (this.counterID < c.getCounterID()) { 
+            return -1;
+        } else if (this.counterID < c.getCounterID()) { 
+            return 1;
+        }
+    }
     return 0;
   }
 

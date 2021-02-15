@@ -51,8 +51,22 @@ class ArrivalEvent extends Event {
    * @return Empty event.
    */
   private Event[] joinQ() { 
-    return new Event[] {new JoinQueueEvent(this.c, this.shop.chooseQueue())};
-  }
+   /**
+    Counter ctr;
+    Counter[] allCounters = this.shop.getCounters();
+    ctr=allCounters[0];
+    for (int i=1 ;i<allCounters.length;i++) { 
+      
+    } 
+    */
+    Counter bestCounter=this.shop.chooseCounter();
+    if (bestCounter.isFull()) { 
+      return new Event[] {new JoinQueueEvent(this.c, bestCounter.getQueue())};  
+    }
+
+//    System.out.println(bestCounter);
+    return new Event[] {new JoinQueueEvent(this.c, this.shop.getQueue())};
+  }  
 
   /**
    * Sets a counter to a customer object and return a Service Begin Event.

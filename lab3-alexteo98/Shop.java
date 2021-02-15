@@ -14,7 +14,7 @@ class Shop {
   private Customer[] allCustomers;
 
   /** Queue object belonging to specific shop */
-  private Queue q;
+  private Queue<Customer> q;
 
   // ----- Constructors --------------------
 
@@ -28,7 +28,7 @@ class Shop {
    * @param timings Array used to store arrival and service time of customers.
    */
 
-  public Shop(int noOfCustomers, int noOfCounters,int counterQueueLength, int shopQueueLength,  double[][] timings) { 
+  public Shop(int noOfCustomers, int noOfCounters,int shopQueueLength, int counterQueueLength,  double[][] timings) { 
     this.allCounters = createCounters(noOfCounters, counterQueueLength);
     this.allCustomers = createCustomers(noOfCustomers, timings);
     this.noOfCustomers = noOfCustomers;
@@ -55,20 +55,27 @@ class Shop {
   public Customer[] getCustomers() { 
     return this.allCustomers;
   }
+ /**
+   * Gets the array of Counters in the shop.
+   *
+   * @return The array containing all counter objects in the shop.
+   */
+  public Counter[] getCounters() { 
+    return this.allCounters;
+  }
+
+
 
   // ----- Methods -----------------------
 
-  public Queue chooseQueue() { 
+  public Counter chooseCounter() { 
     Counter ctr=allCounters[0];
     for (int i=1;i<allCounters.length;i++) { 
       if (ctr.compareTo(allCounters[i])>-1) { 
         ctr=allCounters[i];
       }else{}
     }
-    if (ctr.getQueue().isFull()) { 
-        return this.q;
-    }
-    return ctr.getQueue();
+    return ctr;
   }
 
   public boolean isShopFull() { 

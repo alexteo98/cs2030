@@ -1,6 +1,6 @@
 class JoinQueueEvent extends Event { 
     
-  private Queue q;
+  private Queue<Customer> q;
   private Customer c;
   private Event[] emptyEvent = new Event[] {};
 
@@ -11,7 +11,8 @@ class JoinQueueEvent extends Event {
   }
 
   public Event[] simulate() { 
-      this.q.enq(this.c);
+      boolean t=this.q.enq(this.c);
+//      System.out.println(t);
       return this.emptyEvent;
   }
 

@@ -32,18 +32,44 @@ class ServiceEndEvent extends Event {
 
   // ----- Methods ------------------------
   public Event[] simulate() { 
-    c.getCounter().releaseCounter();
-    if (ctr.getQueue().isEmpty()){
-      return new Event[] {new DepartureEvent(this.c, this.shop)};
-    }else  {
-      Customer nextCustomer = (Customer) ctr.getQueue().deq();
-        return new Event[] {new ServiceBeginEvent(nextCustomer, this.shop, this.ctr), new DepartureEvent(this.c, this.shop)};
-    }
-  }
+    Customer nextCustomer;
+    ctr.releaseCounter();
+    /* if (ctr.getQueue().isEmpty() && this.shop.getQueue().isEmpty()){
+       return new Event[] {new DepartureEvent(this.c, this.shop)};
+       }else  {
 
-  @Override
-  public String toString() { 
-    return String.format("%s: %s service done (by %s %s)", 
-        super.toString(), c, c.getCounter(), c.getCounter().getQueue()); 
-  }
+       if (ctr.getQueue().isEmpty()) { 
+       nextCustomer=(Customer) shop.getQueue().deq();
+       }else  { 
+       nextCustomer = (Customer) ctr.getQueue().deq();
+       }
+       return new Event[] {new ServiceBeginEvent(nextCustomer, this.shop, this.ctr), new DepartureEvent(this.c, this.shop)};
+       }
+       */
+
+    if (!ctr.getQueue().isEmpty()) { 
+      nextCustomer = (Customer) ctr.getQueue().deq();
+      if (!shop.getQueue().isEmpty()) { 
+        ctr.getQueue().enq((Customer)shop.getQueue().deq());
+      }else  {   }
+    } else { 
+      if (!shop.getQueue().isEmpty()){
+        nextCustomer = (Customer) shop.getQueue().deq();
+        // System.out.println(shop.getQueue());
+      } else { 
+        // System.out.println("sada") ; 
+        return new Event[] {new DepartureEvent(this.c, this.shop)};
+      }
+    }
+    //System.out.println(nextCustomer);
+    double currentTime = super.getTime();
+    nextCustomer.setTime(currentTime);
+    return new Event[] {new DepartureEvent(this.c, this.shop), new ServiceBeginEvent(nextCustomer, this.shop, this.ctr)};
+}
+
+@Override
+public String toString() { 
+  return String.format("%s: %s service done (by %s %s)", 
+      super.toString(), c, ctr, ctr.getQueue()); 
+}
 }

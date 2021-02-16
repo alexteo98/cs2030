@@ -82,10 +82,11 @@ class Shop {
      
       for (int i=0;i<allCounters.length;i++) { 
           if (!allCounters[i].isFull()) { 
+           // System.out.println("false");
               return false;
           }
       }
-
+// System.out.println("counters full");
  return this.q.isFull();
 
   }

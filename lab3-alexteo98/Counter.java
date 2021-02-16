@@ -90,7 +90,7 @@ class Counter implements Comparable<Counter> {
   }
 
   public boolean isFull() { 
-      return (this.q.isFull() && this.available);
+      return (this.q.isFull() && !this.available);
   }
 
   /**

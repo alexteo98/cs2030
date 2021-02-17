@@ -3,13 +3,11 @@ class JoinQueueEvent extends Event {
   private Queue<Customer> q;
   private Customer c;
   private Event[] emptyEvent = new Event[] {};
-  private String queueType;
 
-  public JoinQueueEvent(Customer c, Queue q, String queueType) { 
+  public JoinQueueEvent(Customer c, Queue q) { 
     super(c.getTime());
     this.c = c;
     this.q = q;
-    this.queueType=queueType;
   }
 
   public Event[] simulate() { 
@@ -20,18 +18,20 @@ class JoinQueueEvent extends Event {
 //      System.out.println(t);
       return this.emptyEvent;
   }
+  public String  ggetTime(){
+    return String.format("%.3f", super.getTime());
+  }
 
   private Event[] joinQ() { 
     System.out.println(String.format("%s: %s joined %s queue %s", 
-          super.toString(), this.queueType, this.c, this.q));
+          super.toString(), this.c, this.q));
     this.q.enq(this.c);
     return emptyEvent;
   }
 
   @Override
   public String toString() { 
-      return String.format("%s: %s joined %s queue %s", 
-            super.toString(), this.c, this.queueType, this.q);
+      return super.toString();
   }
 
 }

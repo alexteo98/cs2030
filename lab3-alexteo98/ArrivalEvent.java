@@ -63,12 +63,12 @@ class ArrivalEvent extends Event {
     if (!bestCounter.isFull()) {
 
 //    System.out.println(String.format("Joined counter queue %s", bestCounter.getQueue()));
-      return new Event[] {new JoinQueueEvent(this.c, bestCounter.getQueue(), "counter")};  
+      return new Event[] {new JoinCounterQueueEvent(this.c, bestCounter)};  
     }
 
 //    System.out.println(bestCounter);
 //    System.out.println(String.format("Joined shop queue %s", this.shop.getQueue()));
-    return new Event[] {new JoinQueueEvent(this.c, this.shop.getQueue(), "shop")};
+    return new Event[] {new JoinShopQueueEvent(this.c, this.shop)};
   }  
 
   /**

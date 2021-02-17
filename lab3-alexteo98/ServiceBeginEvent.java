@@ -39,6 +39,6 @@ class ServiceBeginEvent extends Event {
 
   @Override
   public String toString() { 
-    return String.format("%s: %s service begin (by %s %s)", super.toString(), c, ctr, ctr.getQueue());
+    return String.format("%s: %s service begin (by %s)", super.toString(), c, ctr);
   }
 }

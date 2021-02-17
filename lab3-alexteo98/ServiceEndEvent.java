@@ -69,7 +69,7 @@ class ServiceEndEvent extends Event {
 
 @Override
 public String toString() { 
-  return String.format("%s: %s service done (by %s %s)", 
-      super.toString(), c, ctr, ctr.getQueue()); 
+  return String.format("%s: %s service done (by %s)", 
+      super.toString(), c, ctr); 
 }
 }

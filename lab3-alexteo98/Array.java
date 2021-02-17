@@ -12,6 +12,10 @@ class Array<T extends Comparable<T>>{
     this.array[index] = item;
   }
 
+  public int length() { 
+      return this.array.length;
+  }
+
   public T get(int index) { 
     return this.array[index];
   }

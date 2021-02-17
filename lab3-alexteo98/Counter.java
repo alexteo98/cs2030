@@ -121,6 +121,6 @@ class Counter implements Comparable<Counter> {
 
   @Override
   public String toString() { 
-    return String.format("S%d", this.counterID);
+    return String.format("S%d %S", this.counterID, this.q);
   }
 }

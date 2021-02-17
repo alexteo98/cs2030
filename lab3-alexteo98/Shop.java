@@ -8,7 +8,7 @@ class Shop {
   private int noOfCounters;
 
   /** an array to store all counter objects */
-  private Counter[] allCounters;
+  private Array<Counter> allCounters;
 
   /** an array to store all customer objects */
   private Customer[] allCustomers;
@@ -29,7 +29,7 @@ class Shop {
    */
 
   public Shop(int noOfCustomers, int noOfCounters,int shopQueueLength, int counterQueueLength,  double[][] timings) { 
-    this.allCounters = createCounters(noOfCounters, counterQueueLength);
+    createCounters(noOfCounters, counterQueueLength);
     this.allCustomers = createCustomers(noOfCustomers, timings);
     this.noOfCustomers = noOfCustomers;
     this.noOfCounters = noOfCounters;
@@ -60,7 +60,7 @@ class Shop {
    *
    * @return The array containing all counter objects in the shop.
    */
-  public Counter[] getCounters() { 
+  public Array<Counter> getCounters() { 
     return this.allCounters;
   }
 
@@ -69,19 +69,19 @@ class Shop {
   // ----- Methods -----------------------
 
   public Counter chooseCounter() { 
-    Counter ctr=allCounters[0];
-    for (int i=1;i<allCounters.length;i++) { 
-      if (ctr.compareTo(allCounters[i])>-1) { 
-        ctr=allCounters[i];
-      }else{}
-    }
-    return ctr;
+//    Counter ctr=allCounters.get(0);
+//    for (int i=1;i<allCounters.length;i++) { 
+//      if (ctr.compareTo(allCounters[i])>-1) { 
+//        ctr=allCounters[i];
+//      }else{}
+//    }
+    return allCounters.min();
   }
 
   public boolean isShopFull() { 
      
-      for (int i=0;i<allCounters.length;i++) { 
-          if (!allCounters[i].isFull()) { 
+      for (int i=0;i<allCounters.length();i++) { 
+          if (!allCounters.get(i).isFull()) { 
            // System.out.println("false");
               return false;
           }
@@ -98,8 +98,8 @@ class Shop {
    */
   public Counter getAvailableCounter() { 
     for (int i = 0; i < noOfCounters; i++) { 
-      if (allCounters[i].available()) { 
-        return allCounters[i];
+      if (allCounters.get(i).available()) { 
+        return allCounters.get(i);
       } else { /*not needed*/ }
     }
     return null;
@@ -126,12 +126,12 @@ class Shop {
    *
    * @return An array of counters belonging to the shop.
    */
-  private Counter[] createCounters(int noOfCounters, int counterQueueLength) {
-    Counter[] allCounters = new Counter[noOfCounters];
+  private void createCounters(int noOfCounters, int counterQueueLength) {
+    allCounters = new Array<Counter>(noOfCounters);
     for (int i = 0; i < noOfCounters; i++) { 
-      allCounters[i] = new Counter(counterQueueLength);
+     allCounters.set(i, new Counter(counterQueueLength));
     }
-    return allCounters;
+    //return allCounters;
   }
 
   /**

@@ -8,7 +8,7 @@
  */
 class Queue<T> {
   /** An array to store the items in the queue. */
-  private Object[] items;
+  private T[] items;
 
   /** Index of the first element in the queue. */
   private int first;
@@ -29,7 +29,9 @@ class Queue<T> {
    */
   public Queue(int size) {
     this.maxSize = size;
-    this.items = new Object[size];
+    @SuppressWarnings("unchecked")
+    T[] tempArray = (T[]) new Object[size];
+    this.items = tempArray;
     this.first = -1;
     this.last = -1;
     this.len = 0;
@@ -65,6 +67,7 @@ class Queue<T> {
     if (this.isEmpty()) {
       return null;
     }
+    @SuppressWarnings("unchecked")
     T item = (T) this.items[this.first];
     this.first = (this.first + 1) % this.maxSize;
     this.len -= 1;

@@ -35,25 +35,11 @@ class ServiceEndEvent extends Event {
     Customer nextCustomer;
     ctr.releaseCounter();
    Event nextEvent=null;
-    /* if (ctr.getQueue().isEmpty() && this.shop.getQueue().isEmpty()){
-       return new Event[] {new DepartureEvent(this.c, this.shop)};
-       }else  {
-
-       if (ctr.getQueue().isEmpty()) { 
-       nextCustomer=(Customer) shop.getQueue().deq();
-       }else  { 
-       nextCustomer = (Customer) ctr.getQueue().deq();
-       }
-       return new Event[] {new ServiceBeginEvent(nextCustomer, this.shop, this.ctr), new DepartureEvent(this.c, this.shop)};
-       }
-       */
-
     if (!ctr.getQueue().isEmpty()) { 
       nextCustomer = (Customer) ctr.getQueue().deq();
       
       if (!shop.getQueue().isEmpty()) { 
-       // ctr.getQueue().enq((Customer)shop.getQueue().deq());
-        Customer nextToQueue = (Customer)shop.getQueue().deq();
+       Customer nextToQueue = (Customer)shop.getQueue().deq();
         nextToQueue.setTime(super.getTime());
         nextEvent=new JoinCounterQueueEvent(nextToQueue,  ctr);
       }else  { }
@@ -64,8 +50,7 @@ class ServiceEndEvent extends Event {
         return new Event[] {new DepartureEvent(this.c, this.shop)};
       }
     }
-    //System.out.println(nextCustomer);
-    double currentTime = super.getTime();
+   double currentTime = super.getTime();
     nextCustomer.setTime(currentTime);
 
     if (nextEvent == null) { 

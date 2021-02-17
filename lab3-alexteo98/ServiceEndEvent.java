@@ -34,6 +34,7 @@ class ServiceEndEvent extends Event {
   public Event[] simulate() { 
     Customer nextCustomer;
     ctr.releaseCounter();
+   Event nextEvent=null;
     /* if (ctr.getQueue().isEmpty() && this.shop.getQueue().isEmpty()){
        return new Event[] {new DepartureEvent(this.c, this.shop)};
        }else  {
@@ -49,22 +50,31 @@ class ServiceEndEvent extends Event {
 
     if (!ctr.getQueue().isEmpty()) { 
       nextCustomer = (Customer) ctr.getQueue().deq();
+      
       if (!shop.getQueue().isEmpty()) { 
-        ctr.getQueue().enq((Customer)shop.getQueue().deq());
-      }else  {   }
+       // ctr.getQueue().enq((Customer)shop.getQueue().deq());
+        Customer nextToQueue = (Customer)shop.getQueue().deq();
+        nextToQueue.setTime(super.getTime());
+        nextEvent=new JoinCounterQueueEvent(nextToQueue,  ctr);
+      }else  { }
     } else { 
       if (!shop.getQueue().isEmpty()){
         nextCustomer = (Customer) shop.getQueue().deq();
-        // System.out.println(shop.getQueue());
       } else { 
-        // System.out.println("sada") ; 
         return new Event[] {new DepartureEvent(this.c, this.shop)};
       }
     }
     //System.out.println(nextCustomer);
     double currentTime = super.getTime();
     nextCustomer.setTime(currentTime);
-    return new Event[] {new DepartureEvent(this.c, this.shop), new ServiceBeginEvent(nextCustomer, this.shop, this.ctr)};
+
+    if (nextEvent == null) { 
+     return new Event[] {new DepartureEvent(this.c, this.shop), new ServiceBeginEvent(nextCustomer, this.shop, this.ctr)};
+    
+    }else{
+
+    return new Event[] {new DepartureEvent(this.c, this.shop),  new ServiceBeginEvent(nextCustomer, this.shop, this.ctr), nextEvent};
+    }
 }
 
 @Override

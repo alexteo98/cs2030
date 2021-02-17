@@ -9,7 +9,7 @@ class JoinShopQueueEvent extends JoinQueueEvent {
 
     @Override
     public String toString() { 
-        return String.format("%s: %s joined shop queue %s ",
+        return String.format("%s: %s joined shop queue %s",
             super.toString(), this.c, this.shop.getQueue());
     }
 }

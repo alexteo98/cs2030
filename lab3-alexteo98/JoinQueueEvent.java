@@ -12,24 +12,13 @@ class JoinQueueEvent extends Event {
 
   public Event[] simulate() { 
       boolean t=this.q.enq(this.c);
-      if (!t) { 
-//          System.out.println("Error during enq");
-      }
-//      System.out.println(t);
-      return this.emptyEvent;
+     return this.emptyEvent;
   }
   public String  ggetTime(){
     return String.format("%.3f", super.getTime());
   }
 
-  private Event[] joinQ() { 
-    System.out.println(String.format("%s: %s joined %s queue %s", 
-          super.toString(), this.c, this.q));
-    this.q.enq(this.c);
-    return emptyEvent;
-  }
-
-  @Override
+ @Override
   public String toString() { 
       return super.toString();
   }

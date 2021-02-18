@@ -1,6 +1,6 @@
 class Box<T> { 
   private final T item;
-  private final Box<? super T> EMPTY_BOX;
+  private final static Box<?> EMPTY_BOX = new Box(null);
 
   private Box(T item) { 
     this.item = item;
@@ -18,12 +18,12 @@ class Box<T> {
     if (item != null) { 
       return new Box(item);
     } else { 
-      return empty();
+      return (Box<S>) empty();
     }
   } 
 
-  public static <S> Box<S> empty() { 
-    return (Box<S>) new Box.of(null);
+  public static <X> Box<X> empty() { 
+    return (Box<X>)EMPTY_BOX;
   }
 
   public boolean isPresent() { 

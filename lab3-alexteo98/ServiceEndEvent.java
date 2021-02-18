@@ -27,44 +27,43 @@ class ServiceEndEvent extends Event {
     super(c.getTime());
     this.c = c;
     this.shop = shop;
-    this.ctr=ctr;
+    this.ctr = ctr;
   }
 
   // ----- Methods ------------------------
   public Event[] simulate() { 
     Customer nextCustomer;
     ctr.releaseCounter();
-   Event nextEvent=null;
+    Event nextEvent = null;
     if (!ctr.getQueue().isEmpty()) { 
       nextCustomer = (Customer) ctr.getQueue().deq();
-      
       if (!shop.getQueue().isEmpty()) { 
-       Customer nextToQueue = (Customer)shop.getQueue().deq();
+        Customer nextToQueue = (Customer) shop.getQueue().deq();
         nextToQueue.setTime(super.getTime());
-        nextEvent=new JoinCounterQueueEvent(nextToQueue,  ctr);
-      }else  { }
-    } else { 
-      if (!shop.getQueue().isEmpty()){
+        nextEvent = new JoinCounterQueueEvent(nextToQueue, ctr);
+      } else { /** not needed */ }
+    } else {  
+      if (!shop.getQueue().isEmpty()) { 
         nextCustomer = (Customer) shop.getQueue().deq();
       } else { 
         return new Event[] {new DepartureEvent(this.c, this.shop)};
       }
     }
-   double currentTime = super.getTime();
+    double currentTime = super.getTime();
     nextCustomer.setTime(currentTime);
 
     if (nextEvent == null) { 
-     return new Event[] {new DepartureEvent(this.c, this.shop), new ServiceBeginEvent(nextCustomer, this.shop, this.ctr)};
-    
-    }else{
-
-    return new Event[] {new DepartureEvent(this.c, this.shop),  new ServiceBeginEvent(nextCustomer, this.shop, this.ctr), nextEvent};
+      return new Event[] {new DepartureEvent(this.c, this.shop),
+        new ServiceBeginEvent(nextCustomer, this.shop, this.ctr)};
+    } else { 
+      return new Event[] {new DepartureEvent(this.c, this.shop), 
+        new ServiceBeginEvent(nextCustomer, this.shop, this.ctr), nextEvent};
     }
-}
+  }
 
-@Override
-public String toString() { 
-  return String.format("%s: %s service done (by %s)", 
-      super.toString(), c, ctr); 
-}
+  @Override
+  public String toString() { 
+    return String.format("%s: %s service done (by %s)",
+        super.toString(), c, ctr); 
+  }
 }

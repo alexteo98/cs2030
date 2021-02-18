@@ -37,8 +37,8 @@ class DepartureEvent extends Event {
   }
 
   public Event[] simulate() { 
-     return emptyEvent;
- }
+    return emptyEvent;
+  }
 
   /**
    * Starts another service to serve next customer is queue.
@@ -48,11 +48,11 @@ class DepartureEvent extends Event {
    *
    * @return new Service Begin Event for next customer in queue.
    *
-  private Event[] nextService() { 
-    Customer nextCustomer = (Customer) this.shop.getQueue().deq();
-    nextCustomer.setTime(super.getTime());
-    nextCustomer.setCounter(this.c.getCounter());
-    return new Event[] {new ServiceBeginEvent(nextCustomer, this.shop) };    
-  }
-  */
+   private Event[] nextService() { 
+   Customer nextCustomer = (Customer) this.shop.getQueue().deq();
+   nextCustomer.setTime(super.getTime());
+   nextCustomer.setCounter(this.c.getCounter());
+   return new Event[] {new ServiceBeginEvent(nextCustomer, this.shop) };    
+   }
+   */
 }

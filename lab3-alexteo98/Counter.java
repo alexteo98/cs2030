@@ -33,7 +33,7 @@ class Counter implements Comparable<Counter> {
   public Counter(int counterQueueLength) { 
     counterID = lastCounterID;
     lastCounterID++;
-    this.q=new Queue<Customer>(counterQueueLength);
+    this.q = new Queue<Customer>(counterQueueLength);
   }
 
   // ----- Getters and Setters ----------------------
@@ -90,7 +90,7 @@ class Counter implements Comparable<Counter> {
   }
 
   public boolean isFull() { 
-      return (this.q.isFull() && !this.available);
+    return (this.q.isFull() && !this.available);
   }
 
   /**
@@ -98,23 +98,23 @@ class Counter implements Comparable<Counter> {
    *
    * @return queue for this counter.
    */
-  public Queue getQueue() { 
-      return this.q;
+  public Queue<Customer> getQueue() { 
+    return this.q;
   }
 
   @Override
   public int compareTo(Counter c) { 
-    
-    if(this.q.length()<c.getQueue().length()) { 
+
+    if (this.q.length() < c.getQueue().length()) {  
+      return -1;
+    } else if (this.q.length() > c.getQueue().length()) {  
+      return 1;
+    } else { 
+      if  (this.counterID < c.getCounterID()) {  
         return -1;
-    }else if (this.q.length()>c.getQueue().length()) { 
+      } else if (this.counterID > c.getCounterID()) {  
         return 1;
-    }else { 
-        if  (this.counterID < c.getCounterID()) { 
-            return -1;
-        } else if (this.counterID < c.getCounterID()) { 
-            return 1;
-        }
+      }
     }
     return 0;
   }

@@ -29,6 +29,11 @@ class Queue<T> {
    */
   public Queue(int size) {
     this.maxSize = size;
+    /**
+     * This operation is type safe as the only way
+     * to insert elements in the array is using the
+     * this.set() method.
+     */
     @SuppressWarnings("unchecked")
     T[] tempArray = (T[]) new Object[size];
     this.items = tempArray;
@@ -67,6 +72,11 @@ class Queue<T> {
     if (this.isEmpty()) {
       return null;
     }
+    /**
+     * This operation is type safe as the only way
+     * to insert elements in the array is using the
+     * this.set() method.
+     */
     @SuppressWarnings("unchecked")
     T item = (T) this.items[this.first];
     this.first = (this.first + 1) % this.maxSize;

@@ -1,26 +1,23 @@
 class JoinQueueEvent extends Event { 
-    
+
   private Queue<Customer> q;
   private Customer c;
   private Event[] emptyEvent = new Event[] {};
 
-  public JoinQueueEvent(Customer c, Queue q) { 
+  public JoinQueueEvent(Customer c, Queue<Customer> q) { 
     super(c.getTime());
     this.c = c;
     this.q = q;
   }
 
   public Event[] simulate() { 
-      boolean t=this.q.enq(this.c);
-     return this.emptyEvent;
-  }
-  public String  ggetTime(){
-    return String.format("%.3f", super.getTime());
+    this.q.enq(this.c);
+    return this.emptyEvent;
   }
 
- @Override
+  @Override
   public String toString() { 
-      return super.toString();
+    return super.toString();
   }
 
 }

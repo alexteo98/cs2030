@@ -28,12 +28,14 @@ class Shop {
    * @param timings Array used to store arrival and service time of customers.
    */
 
-  public Shop(int noOfCustomers, int noOfCounters,int shopQueueLength, int counterQueueLength,  double[][] timings) { 
+  public Shop(int noOfCustomers, int noOfCounters, int shopQueueLength,
+      int counterQueueLength,  double[][] timings) { 
+
     createCounters(noOfCounters, counterQueueLength);
     this.allCustomers = createCustomers(noOfCustomers, timings);
     this.noOfCustomers = noOfCustomers;
     this.noOfCounters = noOfCounters;
-    this.q=new Queue<Customer>(shopQueueLength);
+    this.q = new Queue<Customer>(shopQueueLength);
   }
 
   // ----- Getter and Setters ---------------------
@@ -43,7 +45,7 @@ class Shop {
    *
    * @return The queue object of the shop.
    */
-  public Queue getQueue() { 
+  public Queue<Customer> getQueue() { 
     return this.q;
   }
 
@@ -55,7 +57,8 @@ class Shop {
   public Customer[] getCustomers() { 
     return this.allCustomers;
   }
- /**
+
+  /**
    * Gets the array of Counters in the shop.
    *
    * @return The array containing all counter objects in the shop.
@@ -64,31 +67,20 @@ class Shop {
     return this.allCounters;
   }
 
-
-
   // ----- Methods -----------------------
 
   public Counter chooseCounter() { 
-//    Counter ctr=allCounters.get(0);
-//    for (int i=1;i<allCounters.length;i++) { 
-//      if (ctr.compareTo(allCounters[i])>-1) { 
-//        ctr=allCounters[i];
-//      }else{}
-//    }
     return allCounters.min();
   }
 
   public boolean isShopFull() { 
-     
-      for (int i=0;i<allCounters.length();i++) { 
-          if (!allCounters.get(i).isFull()) { 
-           // System.out.println("false");
-              return false;
-          }
-      }
-// System.out.println("counters full");
- return this.q.isFull();
 
+    for (int i = 0; i < allCounters.length(); i++) { 
+      if (!allCounters.get(i).isFull()) { 
+        return false;
+      }
+    }
+    return this.q.isFull();
   }
 
   /**
@@ -129,7 +121,7 @@ class Shop {
   private void createCounters(int noOfCounters, int counterQueueLength) {
     allCounters = new Array<Counter>(noOfCounters);
     for (int i = 0; i < noOfCounters; i++) { 
-     allCounters.set(i, new Counter(counterQueueLength));
+      allCounters.set(i, new Counter(counterQueueLength));
     }
     //return allCounters;
   }

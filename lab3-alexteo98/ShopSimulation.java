@@ -48,16 +48,16 @@ class ShopSimulation extends Simulation {
    */
 
   public ShopSimulation(Scanner sc) { 
-
     this.noOfCustomers = sc.nextInt();
     this.noOfCounters = sc.nextInt();
-    this.counterQueueLength=sc.nextInt();
+    this.counterQueueLength = sc.nextInt();
     this.shopQueueLength = sc.nextInt();
 
     initEvents = new Event[noOfCustomers];
 
     createTimings(sc);
-    shop = new Shop(this.noOfCustomers, this.noOfCounters, this.shopQueueLength, this.counterQueueLength, this.timings);
+    shop = new Shop(this.noOfCustomers, this.noOfCounters,
+        this.shopQueueLength, this.counterQueueLength, this.timings);
     populateEvents();
   }
 

@@ -30,13 +30,14 @@ class ArrivalEvent extends Event {
   // ----- Methods ------------------------------
   @Override
   public String toString() { 
-    return String.format("%s: %s arrived %s", super.toString(), c, shop.getQueue());
+    return String.format("%s: %s arrived %s",
+        super.toString(), c, shop.getQueue());
   }
 
   public Event[] simulate() { 
     if (shop.counterAvailable()) { 
       return serve();
-    } else {
+    } else { 
       if (shop.isShopFull()) { 
         return depart();
       } else { 
@@ -51,24 +52,12 @@ class ArrivalEvent extends Event {
    * @return Empty event.
    */
   private Event[] joinQ() { 
-   /**
-    Counter ctr;
-    Counter[] allCounters = this.shop.getCounters();
-    ctr=allCounters[0];
-    for (int i=1 ;i<allCounters.length;i++) { 
-      
-    } 
-    */
-    Counter bestCounter=this.shop.chooseCounter();
-    if (!bestCounter.isFull()) {
 
-//    System.out.println(String.format("Joined counter queue %s", bestCounter.getQueue()));
-      return new Event[] {new JoinCounterQueueEvent(this.c, bestCounter)};  
+    Counter bestCounter = this.shop.chooseCounter();
+    if (!bestCounter.isFull()) { 
+      return new Event[] { new JoinCounterQueueEvent(this.c, bestCounter)};  
     }
-
-//    System.out.println(bestCounter);
-//    System.out.println(String.format("Joined shop queue %s", this.shop.getQueue()));
-    return new Event[] {new JoinShopQueueEvent(this.c, this.shop)};
+    return new Event[] { new JoinShopQueueEvent(this.c, this.shop)};
   }  
 
   /**
@@ -77,7 +66,7 @@ class ArrivalEvent extends Event {
    * @return A Service Begin Event of the customer and the shop.
    */
   private Event[] serve() {
-    Counter ctr=shop.getAvailableCounter();
+    Counter ctr = shop.getAvailableCounter();
     c.setCounter(ctr);
     return new Event[] { new ServiceBeginEvent(this.c, this.shop, ctr)};
   }

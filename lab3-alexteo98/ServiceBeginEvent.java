@@ -27,11 +27,11 @@ class ServiceBeginEvent extends Event {
     super(c.getTime());
     this.c = c;
     this.shop = shop;
-    this.ctr=ctr;
+    this.ctr = ctr;
   }
 
   // ----- Methods ------------------------
-  public Event[] simulate() { 
+  public Event[] simulate() {  
     ctr.occupyCounter(c);
     c = c.setTime(c.getTime() + c.getServiceTime());
     return new Event[] {new ServiceEndEvent(this.c, this.shop, this.ctr)};
@@ -39,6 +39,7 @@ class ServiceBeginEvent extends Event {
 
   @Override
   public String toString() { 
-    return String.format("%s: %s service begin (by %s)", super.toString(), c, ctr);
+    return String.format("%s: %s service begin (by %s)",
+        super.toString(), c, ctr);
   }
 }

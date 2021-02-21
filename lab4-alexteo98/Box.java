@@ -14,6 +14,18 @@ class Box<T>  {
     }
   }
 
+  public <T> Box<T> filter(BooleanCondition condition) { 
+     if (!this.isPresent()) { 
+        return (Box<T>) empty();
+     } else { 
+        if (condition.test(this.itemInside)) { 
+            return (Box<T>) this;
+        } else { 
+            return (Box<T>) empty();
+        }
+     }
+  }
+
   public static <S> Box<S> ofNullable(S item) {
     if (item == null) { 
       return empty();

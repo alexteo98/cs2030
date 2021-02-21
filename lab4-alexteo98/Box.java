@@ -14,7 +14,7 @@ class Box<T>  {
     }
   }
 
-  public <T> Box<T> filter(BooleanCondition condition) { 
+  public <V extends T> Box<T> filter(BooleanCondition<V> condition) { 
      if (!this.isPresent()) { 
         return (Box<T>) empty();
      } else { 

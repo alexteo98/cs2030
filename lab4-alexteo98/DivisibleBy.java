@@ -1,12 +1,12 @@
-class DivisibleBy<T extends Integer> implements BooleanCondition<T> { 
+class DivisibleBy implements BooleanCondition<Integer> { 
     
-  private T divisor;
+  private Integer divisor;
 
-  public DivisibleBy(T number) { 
+  public DivisibleBy(Integer number) { 
       this.divisor = number;
   }
 
-  public boolean test(T t) { 
+  public boolean test(Integer t) { 
       return (t%this.divisor==0);
   }
 

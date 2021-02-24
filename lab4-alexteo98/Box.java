@@ -10,15 +10,15 @@ class Box<T>  {
     if (item == null) { 
       return null;
     } else {
-      return (Box<S>)new Box<S>(item);
+      return (Box<S>)new Box(item);
     }
   }
 
-  public <V extends T> Box<T> filter(BooleanCondition<V> condition) { 
+  public Box filter(BooleanCondition<? super T> condition) { 
      if (!this.isPresent()) { 
         return (Box<T>) empty();
      } else { 
-        if (condition.test(this.itemInside)) { 
+        if (condition.test(itemInside)) { 
             return (Box<T>) this;
         } else { 
             return (Box<T>) empty();

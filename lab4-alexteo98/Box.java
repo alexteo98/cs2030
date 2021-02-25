@@ -1,5 +1,6 @@
 class Box<T> { 
   private final T itemInside;
+  @SuppressWarnings("unchecked")
   public static final Box<?> EMPTY_BOX = new Box(null);
 
   private Box(T item) { 
@@ -10,30 +11,33 @@ class Box<T> {
     if (item == null) { 
       return null;
     } else {
-      return (Box<S>)new Box(item);
+      return new Box<S>(item);
     }
   }
 
-  public Box map(Transformer transform) { 
+  public <U> Box<U> map(Transformer<? super T,U> transform) { 
 
-    if (!isPresent()) { 
-      return empty();
+    if (!isPresent()) {
+      @SuppressWarnings("unchecked")
+      Box<U> emptyBox = (Box<U>)empty();
+      return emptyBox;
     } else { 
-      return new Box(transform.transform(this.itemInside));
-
+      return new Box<U>(transform.transform(this.itemInside));
     }
-
-    // return transform.transform(this);
   }
 
   public Box filter(BooleanCondition<? super T> condition) { 
+    
+    //@SuppressWarnings("unchecked")
+    Box<T> temp = empty();
+
     if (!this.isPresent()) { 
-      return (Box<T>) empty();
+      return temp;
     } else { 
       if (condition.test(itemInside)) { 
         return (Box<T>) this;
       } else { 
-        return (Box<T>) empty();
+        return temp;
       }
     }
   }
@@ -47,7 +51,7 @@ class Box<T> {
   }
 
   public boolean isPresent() { 
-    Box<T> temp = new Box(this.itemInside);
+    Box<T> temp = new Box<T>(this.itemInside);
     if (temp.equals(EMPTY_BOX)) { 
       return false;
     } else { 
@@ -65,7 +69,8 @@ class Box<T> {
   @Override
   public boolean equals(Object item) { 
     if (item instanceof Box) { 
-      Box<T> comparator = (Box<T>) item;
+      @SuppressWarnings("unchecked")
+      Box<T> comparator = (Box<T>)item;
       if (this.itemInside == null) { 
         return this.itemInside == comparator.itemInside;
       } else{

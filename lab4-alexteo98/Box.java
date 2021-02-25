@@ -1,4 +1,4 @@
-class Box<T>  { 
+class Box<T> { 
   private final T itemInside;
   public static final Box<?> EMPTY_BOX = new Box(null);
 
@@ -14,16 +14,28 @@ class Box<T>  {
     }
   }
 
+  public Box map(Transformer transform) { 
+
+    if (!isPresent()) { 
+      return empty();
+    } else { 
+      return new Box(transform.transform(this.itemInside));
+
+    }
+
+    // return transform.transform(this);
+  }
+
   public Box filter(BooleanCondition<? super T> condition) { 
-     if (!this.isPresent()) { 
+    if (!this.isPresent()) { 
+      return (Box<T>) empty();
+    } else { 
+      if (condition.test(itemInside)) { 
+        return (Box<T>) this;
+      } else { 
         return (Box<T>) empty();
-     } else { 
-        if (condition.test(itemInside)) { 
-            return (Box<T>) this;
-        } else { 
-            return (Box<T>) empty();
-        }
-     }
+      }
+    }
   }
 
   public static <S> Box<S> ofNullable(S item) {

@@ -26,7 +26,7 @@ class Box<T> {
     }
   }
 
-  public Box filter(BooleanCondition<? super T> condition) { 
+  public Box<T> filter(BooleanCondition<? super T> condition) { 
     
     //@SuppressWarnings("unchecked")
     Box<T> temp = empty();

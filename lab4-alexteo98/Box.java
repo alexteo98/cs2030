@@ -1,4 +1,12 @@
 class Box<T> { 
+
+  /**
+   * This class implements a Box.
+   *
+   * @author Alex Teo (Lab16A)
+   * @version CS2030S AY20/21 Semester 2
+   */
+
   private final T itemInside;
   public static final Box<?> EMPTY_BOX = new Box<>(null);
 

@@ -1,5 +1,14 @@
 class LastDigitsOfHashCode implements Transformer<Object, Integer> { 
 
+  /**
+   * This class implements a Transformer to transform
+   * an Object to the last k digits of that object's
+   * hash code.
+   *
+   * @author Alex Teo (Lab16A)
+   * @version CS2030S AY20/21 Semester 2
+   */
+
   private int digits;
 
   public LastDigitsOfHashCode(int k) { 

@@ -1,9 +1,10 @@
 class BoxIt<T> implements Transformer<T, Box<T>> { 
 
-  public BoxIt() { }
+  public BoxIt() {
+  }
 
   @Override
   public Box<T> transform(T t) { 
-      return Box.of(t);
+    return Box.of(t);
   }
 }

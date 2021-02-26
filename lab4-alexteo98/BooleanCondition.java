@@ -1,3 +1,3 @@
 interface BooleanCondition<T>  { 
-    boolean test(T t);
+  boolean test(T t);
 }

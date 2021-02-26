@@ -14,7 +14,7 @@ class Box<T> {
     }
   }
 
-  public <U> Box<U> map(Transformer<? super T,U> transform) { 
+  public <U> Box<U> map(Transformer<? super T, U> transform) { 
 
     if (!isPresent()) {
       Box<U> emptyBox = empty();
@@ -67,10 +67,10 @@ class Box<T> {
   public boolean equals(Object item) { 
     if (item instanceof Box) { 
       @SuppressWarnings("unchecked")
-      Box<T> comparator = (Box<T>)item;
+      Box<T> comparator = (Box<T>) item;
       if (this.itemInside == null) { 
         return this.itemInside == comparator.itemInside;
-      } else{
+      } else { 
         return this.itemInside.equals(comparator.itemInside);
       }
     } else { 

@@ -1,7 +1,6 @@
 class Box<T> { 
   private final T itemInside;
-  @SuppressWarnings("unchecked")
-  public static final Box<?> EMPTY_BOX = new Box(null);
+  public static final Box<?> EMPTY_BOX = new Box<>(null);
 
   private Box(T item) { 
     this.itemInside = item;
@@ -18,8 +17,7 @@ class Box<T> {
   public <U> Box<U> map(Transformer<? super T,U> transform) { 
 
     if (!isPresent()) {
-      @SuppressWarnings("unchecked")
-      Box<U> emptyBox = (Box<U>)empty();
+      Box<U> emptyBox = empty();
       return emptyBox;
     } else { 
       return new Box<U>(transform.transform(this.itemInside));
@@ -27,8 +25,7 @@ class Box<T> {
   }
 
   public Box<T> filter(BooleanCondition<? super T> condition) { 
-    
-    //@SuppressWarnings("unchecked")
+
     Box<T> temp = empty();
 
     if (!this.isPresent()) { 
@@ -43,7 +40,7 @@ class Box<T> {
   }
 
   public static <S> Box<S> ofNullable(S item) {
-    if (item == null) { 
+    if (item == null) {
       return empty();
     } else {
       return (Box<S>) new Box<S>(item);
@@ -60,7 +57,7 @@ class Box<T> {
   }
 
   public static <S> Box<S> empty() { 
-    // Null Box can be casted into any box.
+    // An empty box can be casted into any type of box.
     @SuppressWarnings("unchecked")
     Box<S> temp = (Box<S>) EMPTY_BOX;
     return temp;

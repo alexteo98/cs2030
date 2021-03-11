@@ -9,6 +9,7 @@ package cs2030s.fp;
 
 public abstract class Maybe<T> { 
 
+  protected T item1;
   public static <S> Maybe<S> of(S item) { 
     if (item==null) { 
       return none();
@@ -24,15 +25,39 @@ public abstract class Maybe<T> {
     return (Maybe<S>) NONE;
   }
 
+  public <U> Maybe<U> map(Transformer<T, U> t) { 
+  //  Maybe<U> temp= none();
+
+    if (this instanceof None) { 
+      return none();
+    } else { 
+        return new Some<U>(t.transform(item1));  
+    }
+  }
+
   private static final Maybe<?> NONE = new None();
 
+  public Maybe<T> filter(BooleanCondition<? super T> bc) { 
+    Maybe<T> temp=(Maybe<T>) none();  
+    if (this instanceof None) { 
+      return temp;
+    } else  { 
+      if (item1==null) { 
+        return this;
+      } else if (bc.test(item1)) { 
+        return this;
+      } else  { 
+          return temp;
+      }
+    }
+  }
 
   public static final class None extends Maybe<Object> { 
 
     private Object item;
 
     public None() { 
-      this.item =  null;
+      item1 =  null;
     }
 
     public boolean equals(Maybe compareTo) { 
@@ -48,7 +73,7 @@ public abstract class Maybe<T> {
   public static final class Some<T> extends Maybe<T> { 
     private T item;
     public Some(T t) { 
-      this.item = t;
+      item1 = t;
     }
 
     @Override
@@ -56,11 +81,11 @@ public abstract class Maybe<T> {
       if (compareTo instanceof Some) { 
         Some<T> s = (Some<T>) compareTo;  
 
-        if (this.item==null){ 
+        if (item1==null){ 
           System.out.println("1");
-          return this.item==s.item;
+          return item1==s.item1;
         } else { 
-          return this.item.equals(s.item);
+          return item1.equals(s.item1);
         }
       } else  { 
         return false;
@@ -69,7 +94,7 @@ public abstract class Maybe<T> {
 
     @Override
     public String toString() { 
-      return String.format("[%s]", this.item);
+      return String.format("[%s]", item1);
     }
   }
 }

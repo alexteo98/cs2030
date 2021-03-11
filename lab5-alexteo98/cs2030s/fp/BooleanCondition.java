@@ -9,5 +9,5 @@ public interface BooleanCondition<T>  {
    * @version CS2030S AY20/21 Semester 2
    */
 
-  boolean test(T t);
+public  boolean test(T t);
 }

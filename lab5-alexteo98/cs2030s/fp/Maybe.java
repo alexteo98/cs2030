@@ -25,8 +25,10 @@ public abstract class Maybe<T> {
     return (Maybe<S>) NONE;
   }
 
-  public <U> Maybe<U> map(Transformer<T, U> t) { 
-  //  Maybe<U> temp= none();
+  public abstract <U> U orElse(U u);
+  public abstract <U> U orElseGet(Producer<U> p);
+
+  public <U> Maybe<U> map(Transformer<T, U> t) {  
 
     if (this instanceof None) { 
       return none();
@@ -60,6 +62,16 @@ public abstract class Maybe<T> {
       item1 =  null;
     }
 
+    @Override
+    public <U> U orElse(U u) { 
+        return u;
+    }
+
+    @Override
+    public <U> U orElseGet(Producer<U> p) { 
+        return p.produce();
+    }
+
     public boolean equals(Maybe compareTo) { 
       return compareTo instanceof None;
     }
@@ -74,6 +86,16 @@ public abstract class Maybe<T> {
     private T item;
     public Some(T t) { 
       item1 = t;
+    }
+
+    @Override
+    public <U> U orElse(U u) { 
+        return u;
+    }
+
+    @Override
+    public <U> U orElseGet(Producer<U> p) { 
+        return p.produce();
     }
 
     @Override

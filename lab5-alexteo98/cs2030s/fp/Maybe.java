@@ -25,8 +25,8 @@ public abstract class Maybe<T> {
     return (Maybe<S>) NONE;
   }
 
-  public abstract <U> U orElse(U u);
-  public abstract <U> U orElseGet(Producer<U> p);
+  public abstract <U extends T> T orElse(U u);
+  public abstract <U extends T> T orElseGet(Producer<U> p);
 
   public <U> Maybe<U> map(Transformer<T, U> t) {  
 
@@ -89,13 +89,13 @@ public abstract class Maybe<T> {
     }
 
     @Override
-    public <U> U orElse(U u) { 
-        return u;
+    public <U extends T> T orElse(U u) { 
+        return item1;
     }
 
     @Override
-    public <U> U orElseGet(Producer<U> p) { 
-        return p.produce();
+    public <U extends T> T orElseGet(Producer<U> p) { 
+        return item1;
     }
 
     @Override

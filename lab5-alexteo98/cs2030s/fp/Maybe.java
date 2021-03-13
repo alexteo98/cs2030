@@ -28,14 +28,34 @@ public abstract class Maybe<T> {
   public abstract <U extends T> T orElse(U u);
   public abstract <U extends T> T orElseGet(Producer<U> p);
 
-  public <U> Maybe<U> map(Transformer<T, U> t) {  
-
+  public <U> Maybe<U> map(Transformer<? super T, ? extends U> t) {  
     if (this instanceof None) { 
       return none();
     } else { 
-        return new Some<U>(t.transform(item1));  
+      return new Some<U>(t.transform(item1));  
     }
   }
+
+  public <U> Maybe<U> flatMap(Transformer<? super T, ? extends Maybe<? extends U>> t) { 
+    if (item1==null) { 
+        return none();
+    }
+    Maybe<?> transformed = t.transform(item1);
+    if (transformed instanceof None) { 
+      return none();
+    } else { 
+      // instance of Some 
+      Some<U> s = (Some<U>) transformed;
+      if (s.item1 instanceof None) { 
+          return none();
+      } else if (s.item1 instanceof Some) { 
+          return (Some<U>)s.item1;
+      } else  { 
+          return new Some<U> (s.item1);
+      }
+    }
+  }
+
 
   private static final Maybe<?> NONE = new None();
 
@@ -49,7 +69,7 @@ public abstract class Maybe<T> {
       } else if (bc.test(item1)) { 
         return this;
       } else  { 
-          return temp;
+        return temp;
       }
     }
   }
@@ -64,12 +84,12 @@ public abstract class Maybe<T> {
 
     @Override
     public <U> U orElse(U u) { 
-        return u;
+      return u;
     }
 
     @Override
     public <U> U orElseGet(Producer<U> p) { 
-        return p.produce();
+      return p.produce();
     }
 
     public boolean equals(Maybe compareTo) { 
@@ -90,12 +110,12 @@ public abstract class Maybe<T> {
 
     @Override
     public <U extends T> T orElse(U u) { 
-        return item1;
+      return item1;
     }
 
     @Override
     public <U extends T> T orElseGet(Producer<U> p) { 
-        return item1;
+      return item1;
     }
 
     @Override

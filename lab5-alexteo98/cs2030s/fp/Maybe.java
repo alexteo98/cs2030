@@ -1,4 +1,5 @@
 package cs2030s.fp;
+import java.util.NoSuchElementException;
 
 /**
  * CS2030S Lab 5
@@ -9,7 +10,7 @@ package cs2030s.fp;
 
 public abstract class Maybe<T> { 
 
-  protected T item1;
+  protected abstract T get();
   public static <S> Maybe<S> of(S item) { 
     if (item==null) { 
       return none();
@@ -32,27 +33,31 @@ public abstract class Maybe<T> {
     if (this instanceof None) { 
       return none();
     } else { 
-      return new Some<U>(t.transform(item1));  
+      return new Some<U>(t.transform(this.get()));  
     }
   }
 
   public <U> Maybe<U> flatMap(Transformer<? super T, ? extends Maybe<? extends U>> t) { 
-    if (item1==null) { 
+    try{
+      if (this.get()==null) { 
         return none();
-    }
-    Maybe<?> transformed = t.transform(item1);
-    if (transformed instanceof None) { 
-      return none();
-    } else { 
-      // instance of Some 
-      Some<U> s = (Some<U>) transformed;
-      if (s.item1 instanceof None) { 
-          return none();
-      } else if (s.item1 instanceof Some) { 
-          return (Some<U>)s.item1;
-      } else  { 
-          return new Some<U> (s.item1);
       }
+      Maybe<?> transformed = t.transform(this.get());
+      if (transformed instanceof None) { 
+        return none();
+      } else { 
+        // instance of Some 
+        Some<U> s = (Some<U>) transformed;
+        if (s.get() instanceof None) { 
+          return none();
+        } else if (s.get() instanceof Some) { 
+          return (Some<U>)s.get();
+        } else  { 
+          return new Some<U> (s.get());
+        }
+      }
+    } catch (NoSuchElementException e) { 
+      return none();
     }
   }
 
@@ -64,9 +69,9 @@ public abstract class Maybe<T> {
     if (this instanceof None) { 
       return temp;
     } else  { 
-      if (item1==null) { 
+      if (this.get()==null) { 
         return this;
-      } else if (bc.test(item1)) { 
+      } else if (bc.test(this.get())) { 
         return this;
       } else  { 
         return temp;
@@ -78,8 +83,13 @@ public abstract class Maybe<T> {
 
     private Object item;
 
+    @Override
+    protected Object get() throws NoSuchElementException { 
+      throw new NoSuchElementException();
+    }
+
     public None() { 
-      item1 =  null;
+      this.item =  null;
     }
 
     @Override
@@ -105,17 +115,22 @@ public abstract class Maybe<T> {
   public static final class Some<T> extends Maybe<T> { 
     private T item;
     public Some(T t) { 
-      item1 = t;
+      this.item = t;
+    }
+
+    @Override
+    protected T get() { 
+      return this.item;
     }
 
     @Override
     public <U extends T> T orElse(U u) { 
-      return item1;
+      return this.get();
     }
 
     @Override
     public <U extends T> T orElseGet(Producer<U> p) { 
-      return item1;
+      return this.get();
     }
 
     @Override
@@ -123,11 +138,10 @@ public abstract class Maybe<T> {
       if (compareTo instanceof Some) { 
         Some<T> s = (Some<T>) compareTo;  
 
-        if (item1==null){ 
-          System.out.println("1");
-          return item1==s.item1;
+        if (this.get()==null){ 
+          return this.get()==s.get();
         } else { 
-          return item1.equals(s.item1);
+          return this.get().equals(s.get());
         }
       } else  { 
         return false;
@@ -136,7 +150,7 @@ public abstract class Maybe<T> {
 
     @Override
     public String toString() { 
-      return String.format("[%s]", item1);
+      return String.format("[%s]", this.item);
     }
   }
 }

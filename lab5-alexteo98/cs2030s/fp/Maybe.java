@@ -1,4 +1,5 @@
 package cs2030s.fp;
+
 import java.util.NoSuchElementException;
 
 /**
@@ -11,13 +12,15 @@ import java.util.NoSuchElementException;
 public abstract class Maybe<T> { 
 
   protected abstract T get();
+  
   public static <S> Maybe<S> of(S item) { 
-    if (item==null) { 
+    if (item == null) { 
       return none();
     } else  { 
       return some(item);
     }
   }
+
   public static <S> Some<S> some(S item) { 
     return new Some<S>(item);
   }
@@ -29,6 +32,7 @@ public abstract class Maybe<T> {
   }
 
   public abstract <U extends T> T orElse(U u);
+  
   public abstract <U extends T> T orElseGet(Producer<U> p);
 
   public <U> Maybe<U> map(Transformer<? super T, ? extends U> t) {  
@@ -40,8 +44,8 @@ public abstract class Maybe<T> {
   }
 
   public <U> Maybe<U> flatMap(Transformer<? super T, ? extends Maybe<? extends U>> t) { 
-    try{
-      if (this.get()==null) { 
+    try {  
+      if (this.get() == null) { 
         return none();
       }
       Maybe<?> transformed = t.transform(this.get());
@@ -58,7 +62,7 @@ public abstract class Maybe<T> {
           Some<U> temp = (Some<U>) s.get();
           return temp;
         } else  { 
-          return new Some<U> (s.get());
+          return new Some<U>(s.get());
         }
       }
     } catch (NoSuchElementException e) { 
@@ -70,11 +74,11 @@ public abstract class Maybe<T> {
   private static final Maybe<Object> NONE = new None();
 
   public Maybe<T> filter(BooleanCondition<? super T> bc) { 
-    Maybe<T> temp= none();  
+    Maybe<T> temp = none();  
     if (this instanceof None) { 
       return temp;
     } else  { 
-      if (this.get()==null) { 
+      if (this.get() == null) { 
         return this;
       } else if (bc.test(this.get())) { 
         return this;
@@ -118,7 +122,9 @@ public abstract class Maybe<T> {
   }
 
   public static final class Some<T> extends Maybe<T> { 
+    
     private T item;
+    
     public Some(T t) { 
       this.item = t;
     }
@@ -140,15 +146,15 @@ public abstract class Maybe<T> {
 
     @Override
     public boolean equals(Object compareTo) { 
-      if (compareTo instanceof Some) {
+      if (compareTo instanceof Some) { 
         @SuppressWarnings("unchecked")
         Some<T> s = (Some<T>) compareTo;  
-        if (this.get()==null){ 
-          return this.get()==s.get();
+        if (this.get() == null) { 
+          return this.get() == s.get();
         } else { 
           return this.get().equals(s.get());
         }
-      } else  { 
+      } else { 
         return false;
       }
     }

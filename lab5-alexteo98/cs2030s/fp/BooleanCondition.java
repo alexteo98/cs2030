@@ -1,7 +1,7 @@
 package cs2030s.fp;
 
 public interface BooleanCondition<T>  { 
- 
+
   /**
    * This class implements a Boolean Condition.
    *
@@ -9,5 +9,5 @@ public interface BooleanCondition<T>  {
    * @version CS2030S AY20/21 Semester 2
    */
 
-public  boolean test(T t);
+  public  boolean test(T t);
 }

@@ -19,11 +19,13 @@ public abstract class Maybe<T> {
     }
   }
   public static <S> Some<S> some(S item) { 
-    return new Some(item);
+    return new Some<S>(item);
   }
 
   public static <S> Maybe<S> none() { 
-    return (Maybe<S>) NONE;
+    @SuppressWarnings("unchecked")
+    Maybe<S> temp = (Maybe<S>) NONE;
+    return temp;
   }
 
   public abstract <U extends T> T orElse(U u);
@@ -47,11 +49,14 @@ public abstract class Maybe<T> {
         return none();
       } else { 
         // instance of Some 
+        @SuppressWarnings("unchecked")
         Some<U> s = (Some<U>) transformed;
         if (s.get() instanceof None) { 
           return none();
         } else if (s.get() instanceof Some) { 
-          return (Some<U>)s.get();
+          @SuppressWarnings("unchecked")
+          Some<U> temp = (Some<U>) s.get();
+          return temp;
         } else  { 
           return new Some<U> (s.get());
         }
@@ -62,10 +67,10 @@ public abstract class Maybe<T> {
   }
 
 
-  private static final Maybe<?> NONE = new None();
+  private static final Maybe<Object> NONE = new None();
 
   public Maybe<T> filter(BooleanCondition<? super T> bc) { 
-    Maybe<T> temp=(Maybe<T>) none();  
+    Maybe<T> temp= none();  
     if (this instanceof None) { 
       return temp;
     } else  { 
@@ -102,7 +107,7 @@ public abstract class Maybe<T> {
       return p.produce();
     }
 
-    public boolean equals(Maybe compareTo) { 
+    public boolean equals(Maybe<Object> compareTo) { 
       return compareTo instanceof None;
     }
 
@@ -135,9 +140,9 @@ public abstract class Maybe<T> {
 
     @Override
     public boolean equals(Object compareTo) { 
-      if (compareTo instanceof Some) { 
+      if (compareTo instanceof Some) {
+        @SuppressWarnings("unchecked")
         Some<T> s = (Some<T>) compareTo;  
-
         if (this.get()==null){ 
           return this.get()==s.get();
         } else { 

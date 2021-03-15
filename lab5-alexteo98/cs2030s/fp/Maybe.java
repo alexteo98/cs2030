@@ -12,7 +12,7 @@ import java.util.NoSuchElementException;
 public abstract class Maybe<T> { 
 
   protected abstract T get();
-  
+
   public static <S> Maybe<S> of(S item) { 
     if (item == null) { 
       return none();
@@ -32,7 +32,7 @@ public abstract class Maybe<T> {
   }
 
   public abstract <U extends T> T orElse(U u);
-  
+
   public abstract <U extends T> T orElseGet(Producer<U> p);
 
   public <U> Maybe<U> map(Transformer<? super T, ? extends U> t) {  
@@ -43,33 +43,20 @@ public abstract class Maybe<T> {
     }
   }
 
-  public <U> Maybe<U> flatMap(Transformer<? super T, ? extends Maybe<? extends U>> t) { 
-    try {  
+  public <U> Maybe<U> flatMap(Transformer<? super T, ? extends Maybe<? extends U>> t) {
+    if (this instanceof None) { 
+      return none();
+    } else { 
+      // instanceof Some
       if (this.get() == null) { 
         return none();
-      }
-      Maybe<?> transformed = t.transform(this.get());
-      if (transformed instanceof None) { 
-        return none();
-      } else { 
-        // instance of Some 
+      } else  { 
         @SuppressWarnings("unchecked")
-        Some<U> s = (Some<U>) transformed;
-        if (s.get() instanceof None) { 
-          return none();
-        } else if (s.get() instanceof Some) { 
-          @SuppressWarnings("unchecked")
-          Some<U> temp = (Some<U>) s.get();
-          return temp;
-        } else  { 
-          return new Some<U>(s.get());
-        }
+        Maybe<U> m = (Maybe<U>) t.transform(this.get());
+        return m;
       }
-    } catch (NoSuchElementException e) { 
-      return none();
     }
   }
-
 
   private static final Maybe<Object> NONE = new None();
 
@@ -122,9 +109,9 @@ public abstract class Maybe<T> {
   }
 
   public static final class Some<T> extends Maybe<T> { 
-    
+
     private T item;
-    
+
     public Some(T t) { 
       this.item = t;
     }

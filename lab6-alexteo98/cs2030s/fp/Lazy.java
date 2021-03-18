@@ -29,6 +29,10 @@ public class Lazy<T> {
     }
   }
 
+  public Lazy<T> map(Transformer<? super T, ? extends T> t) { 
+      return Lazy.<T>of()
+  }
+
   @Override
   public String toString() {  
     if (this.value == null) { 

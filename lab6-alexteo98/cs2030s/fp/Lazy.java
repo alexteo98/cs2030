@@ -39,6 +39,23 @@ public class Lazy<T> {
     return Lazy.<U>of(p);
   }
 
+  public Lazy<Boolean> filter(BooleanCondition<? super T> bc) { 
+      Producer<Boolean> p = () -> bc.test(this.get());
+      return Lazy.<Boolean>of(p);
+  }
+
+  @Override
+  public boolean equals(Object o) { 
+      if (o instanceof Lazy) { 
+        // safe to Suppress Warning as it is of type Lazy and Object is the  most general type.
+        @SuppressWarnings("unchecked")
+        Lazy<Object> lazy = (Lazy<Object>) o;
+          return this.get().equals(lazy.get());
+      } else  { 
+          return false;
+      }
+  }
+
   @Override
   public String toString() {  
     if (this.value == null) { 

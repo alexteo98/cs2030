@@ -40,20 +40,25 @@ public class Lazy<T> {
   }
 
   public Lazy<Boolean> filter(BooleanCondition<? super T> bc) { 
-      Producer<Boolean> p = () -> bc.test(this.get());
-      return Lazy.<Boolean>of(p);
+    Producer<Boolean> p = () -> bc.test(this.get());
+    return Lazy.<Boolean>of(p);
+  }
+
+  public <S, R> Lazy<R> combine(Lazy<? extends S> lazy, Combiner<? super T, ? super S, ? extends R> cmb) { 
+    Producer<R> p = () -> cmb.combine(this.get(), lazy.get());
+    return Lazy.<R>of(p);
   }
 
   @Override
   public boolean equals(Object o) { 
-      if (o instanceof Lazy) { 
-        // safe to Suppress Warning as it is of type Lazy and Object is the  most general type.
-        @SuppressWarnings("unchecked")
-        Lazy<Object> lazy = (Lazy<Object>) o;
-          return this.get().equals(lazy.get());
-      } else  { 
-          return false;
-      }
+    if (o instanceof Lazy) { 
+      // safe to Suppress Warning as it is of type Lazy and Object is the  most general type.
+      @SuppressWarnings("unchecked")
+      Lazy<Object> lazy = (Lazy<Object>) o;
+      return this.get().equals(lazy.get());
+    } else  { 
+      return false;
+    }
   }
 
   @Override

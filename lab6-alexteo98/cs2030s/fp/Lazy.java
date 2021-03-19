@@ -2,7 +2,7 @@ package cs2030s.fp;
 
 public class Lazy<T> {
   private Producer<T> producer;
-  private Maybe<T> value;
+  private Maybe<T> value = null;
 
   public static final <T> Lazy<T> of(T v) { 
     return new Lazy<T> (v);
@@ -22,23 +22,29 @@ public class Lazy<T> {
 
   public T get() { 
     if (value == null) { 
-        value = Maybe.of(producer.produce());
-        return value.orElse(null);
+      value = Maybe.of(this.producer.produce());
+      return value.orElse(null);
     } else { 
-        return value.orElse(null);
+      return value.orElse(null);
     }
   }
 
-  public Lazy<T> map(Transformer<? super T, ? extends T> t) { 
-      return Lazy.<T>of()
+  public <U> Lazy<U> map(Transformer<? super T,? extends U> t) { 
+    Producer<U> p = () -> t.transform(this.get());
+    return Lazy.<U>of(p);
+  }
+
+  public <U> Lazy<U> flatMap(Transformer<? super T, ? extends Lazy<? extends U>> t) { 
+    Producer<U> p = () -> t.transform(this.get()).get();  
+    return Lazy.<U>of(p);
   }
 
   @Override
   public String toString() {  
     if (this.value == null) { 
-        return "?";
+      return "?";
     } else { 
-        return String.format("%s", value.orElse(null));
+      return String.format("%s", value.orElse(null));
     }
   }
 }

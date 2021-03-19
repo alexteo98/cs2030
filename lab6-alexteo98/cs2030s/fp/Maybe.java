@@ -38,22 +38,25 @@ public abstract class Maybe<T> {
   public <U> Maybe<U> map(Transformer<? super T, ? extends U> t) {  
     /*if (this instanceof None) { 
       return none();
-    } else { 
+      } else { 
       return new Some<U>(t.transform(this.get()));  
-    }*/
+      }*/
 
     try { 
-        return new Some<U>(t.transform(this.get()));
+      return new Some<U>(t.transform(this.get()));
     } catch (NoSuchElementException e) { 
-        return none();
+      return none();
     }
   }
 
   public <U> Maybe<U> flatMap(Transformer<? super T, ? extends Maybe<? extends U>> t) {
-    if (this instanceof None) { 
+    /*if (this instanceof None) { 
       return none();
-    } else { 
-      // instanceof Some
+      } else { 
+    // instanceof Some
+    }*/
+
+    try { 
       if (this.get() == null) { 
         return none();
       } else  { 
@@ -61,6 +64,9 @@ public abstract class Maybe<T> {
         Maybe<U> m = (Maybe<U>) t.transform(this.get());
         return m;
       }
+
+    } catch(NoSuchElementException e) { 
+      return none();
     }
   }
 
@@ -81,14 +87,14 @@ public abstract class Maybe<T> {
     }
   }
 
-  private static final class None extends Maybe<Object> { 
+  public static final class None extends Maybe<Object> { 
 
     @Override
     protected Object get() throws NoSuchElementException { 
       throw new NoSuchElementException();
     }
 
-    public None() { }
+    private None() { }
 
     @Override
     public <U> U orElse(U u) { 
@@ -110,11 +116,11 @@ public abstract class Maybe<T> {
     }
   }
 
-  private static final class Some<T> extends Maybe<T> { 
+  public static final class Some<T> extends Maybe<T> { 
 
     private T item;
 
-    public Some(T t) { 
+    private Some(T t) { 
       this.item = t;
     }
 

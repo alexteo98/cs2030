@@ -11,8 +11,19 @@ import java.util.NoSuchElementException;
 
 public abstract class Maybe<T> { 
 
+  /**
+   * Abstract method to get the element inside of its subtypes Some and None.
+   *
+   * @return Element T inside of Some.
+   * @throws NoSuchElementException When called on instance of None.
+   */
   protected abstract T get();
 
+  /**
+   * Factory method to create an item wrapped around Maybe.
+   *
+   * @return None Object if given Null, Some Object otherwise.
+   */
   public static <S> Maybe<S> of(S item) { 
     if (item == null) { 
       return none();
@@ -21,15 +32,28 @@ public abstract class Maybe<T> {
     }
   }
 
+  /**
+   * Calls the constructor of Some with type S.
+   *
+   * @param item of type S to be wrapped with an instance of Some.
+   * @return An instance of Some wrapped around an object of type S.
+   */
   public static <S> Some<S> some(S item) { 
     return new Some<S>(item);
   }
 
+
+  /**
+   * Returns a static reference to a None Object casted to Maybe of type S
+   *
+   * @return None object casted to type Maybe<S>.
+   */
   public static <S> Maybe<S> none() { 
     @SuppressWarnings("unchecked")
     Maybe<S> temp = (Maybe<S>) NONE;
     return temp;
   }
+
 
   public abstract <U extends T> T orElse(U u);
 
@@ -89,6 +113,9 @@ public abstract class Maybe<T> {
 
   public static final class None extends Maybe<Object> { 
 
+    /**
+     * @throws NoSuchElementException As None does not have an element inside.
+     */
     @Override
     protected Object get() throws NoSuchElementException { 
       throw new NoSuchElementException();
@@ -96,16 +123,34 @@ public abstract class Maybe<T> {
 
     private None() { }
 
+    /**
+     * Does nothing and returns the element U given as parameter.
+     * 
+     * @param u The element to return.
+     * @return u The element returned.
+     */
     @Override
     public <U> U orElse(U u) { 
       return u;
     }
 
+    /**
+     * Does nothing and returns the element produced by the producer given as the parameter.
+     *
+     * @param p The Producer of type U that will be executed.
+     * @return p The element of type U produced by the producer.
+     */
     @Override
     public <U> U orElseGet(Producer<U> p) { 
       return p.produce();
     }
 
+    /**
+     * Compares if this is equal to the Maybe object given.
+     *
+     * @param compareTo the Maybe Object to be compared to.
+     * @return True if compareTo is a None object, False otherwise.
+     */
     public boolean equals(Maybe<Object> compareTo) { 
       return compareTo instanceof None;
     }

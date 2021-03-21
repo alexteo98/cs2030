@@ -1,3 +1,4 @@
+import cs2030s.fp.Producer;
 import cs2030s.fp.Lazy;
 import cs2030s.fp.Transformer;
 import java.util.ArrayList;
@@ -26,8 +27,8 @@ class LazyList<T> {
 
   /** 
    * Generate the content of the list.  Given x and a lambda f, 
-   * generate the list of n elements as [x, f(x), f(f(x)), f(f(f(x))), 
-   * ... ]
+   * generate the list of n lazy elements as [x, f(x), f(f(x)), f(f(f(x))), 
+   * ... ]. Only the first element is evaluated, the rest of the elements are not evaluated until called upon.
    *
    * @param <T> The type of the elements in the list.
    * @param n The number of elements.
@@ -36,8 +37,7 @@ class LazyList<T> {
    * @return The created list.
    */
   public static <T> LazyList<T> generate(int n, T seed, Transformer<T, T> f) {
-    LazyList<T> lazyList = new LazyList<>(new ArrayList<Lazy<T>>());
-    //T curr = seed;
+    LazyList<T> lazyList = new LazyList<>(new ArrayList<>());
     Lazy<T> first = Lazy.<T>of(seed);
     lazyList.list.add(first);
     for (int i = 1; i < n; i++) {
@@ -54,8 +54,7 @@ class LazyList<T> {
    * @return The element at index i.
    */
   public T get(int i) {
-    Lazy<T> lazy = (Lazy<T>) this.list.get(i);
-    return lazy.get();
+     return this.list.get(i).get();
   }
 
   /** 

@@ -3,15 +3,13 @@ package cs2030s.fp;
 import java.util.NoSuchElementException;
 
 /**
- * CS2030S Lab 5
+ * This abstract class implements an object of Maybe, whereby it could contain an element,
+ * "Some" or it could not contain en element, "None".
+ *
+ * <p>CS2030S Lab 5
  * AY20/21 Semester 2
  *
- * @author Alex Teo (Lab 16A)
- */
-
-
-/**
- * This abstract class implements an object of Maybe, whereby it could contain an element, "Some" or it could not contain en element, "None".
+ * @author Alex Teo (Lab 16A) 
  */
 public abstract class Maybe<T> { 
 
@@ -26,6 +24,8 @@ public abstract class Maybe<T> {
   /**
    * Factory method to create an item wrapped around Maybe.
    *
+   * @param <S> The type of object to be wrapped.
+   * @param item The item of type S to be wrapped.
    * @return None Object if given Null, Some Object otherwise.
    */
   public static <S> Maybe<S> of(S item) { 
@@ -39,6 +39,7 @@ public abstract class Maybe<T> {
   /**
    * Calls the constructor of Some with type S.
    *
+   * @param <S> The type of item to be wrapped.
    * @param item of type S to be wrapped with an instance of Some.
    * @return An instance of Some wrapped around an object of type S.
    */
@@ -47,9 +48,10 @@ public abstract class Maybe<T> {
   }
 
   /**
-   * Returns a static reference to a None Object casted to Maybe of type S
+   * Returns a static reference to a None Object casted to Maybe of type S.
    *
-   * @return None object casted to type Maybe<S>.
+   * @param <S> Type of Maybe NONE should be casted to.
+   * @return None object casted to type S.
    */
   public static <S> Maybe<S> none() { 
     @SuppressWarnings("unchecked")
@@ -60,18 +62,21 @@ public abstract class Maybe<T> {
   /**
    * Abstract Method to get element T if it is an instance of Some, returns the parameter otherwise.
    *
+   * @param <U> The type to be returned that must be a subtype of T.
    * @param u element which is a subtype of T.
-   * @return The element of type T if it is an instance of Some.
-   * @return The parameter of type U if it is an instance of None.
+   * @return The element of type T if it is an instance of Some, 
+    The parameter of type U if it is an instance of None.
    */
   public abstract <U extends T> T orElse(U u);
 
   /**
-   * Abstract Method to get element T if it is an instance of Some, returns the element produced by argument otherwise.
+   * Abstract Method to get element T if it is an instance of Some, 
+   * returns the element produced by argument otherwise.
    *
+   * @param <U> The type to be returned that must be a subtype of T.
    * @param p Producer to produce an element if it is an instance of None.
-   * @return The element of type T if it is an instance of Some.
-   * @return The element of type U produced by parameter p if it is an instance of None.
+   * @return The element of type T if it is an instance of Some, 
+    otherwise the element of type U produced by parameter p if it is an instance of None.
    */
   public abstract <U extends T> T orElseGet(Producer<U> p);
 
@@ -79,9 +84,10 @@ public abstract class Maybe<T> {
    * Changes the current item of type T into type U with a Transformer.
    * Transformer must have a type of ? super T, ? extends U.
    *
+   * @param <U> The type of Maybe to be returned after transforming.
    * @param t Transformer to change current element of type T to element of type U.
-   * @return An instance of None if used on an instance of None.
-   * @return An instance of Some wrapped around the item transformed by the transformer argument.
+   * @return An instance of None if used on an instance of None, or
+    An instance of Some wrapped around the item transformed by the transformer argument.
    */
   public <U> Maybe<U> map(Transformer<? super T, ? extends U> t) {  
     if (this == NONE) { 
@@ -96,9 +102,10 @@ public abstract class Maybe<T> {
    * Transforms the element of type T into type U such that it does not get wrapped twice.
    * Transformer must have a type of (? super T, ? extends Maybe(? extends U)).
    *
+   * @param <U> The type if Maybe to be returned after transforming.
    * @param t Transformer to change current element of type T to element of type U.
-   * @return An instance of None if used on an instance of None.
-   * @return An instance of Some wrapped around the item transformed by the transformer argument.
+   * @return An instance of None if used on an instance of None. or
+   An instance of Some wrapped around the item transformed by the transformer argument.
    */
   public <U> Maybe<U> flatMap(Transformer<? super T, ? extends Maybe<? extends U>> t) { 
     if (this == NONE) { 
@@ -117,10 +124,10 @@ public abstract class Maybe<T> {
 
   /**
    * Tests the element inside with the given BooleanCondition.
-   * 
+   *
    * @param bc Boolean Condition Object to test the element with.
-   * @return None object if the element fails the test or this is an instance of None.
-   * @return The original object if it passes the test.
+   * @return None object if the element fails the test or this is an instance of None, .
+   Otherwise the original object if it passes the test.
    */
   public Maybe<T> filter(BooleanCondition<? super T> bc) { 
     Maybe<T> temp = none();  
@@ -144,6 +151,8 @@ public abstract class Maybe<T> {
   public static final class None extends Maybe<Object> { 
 
     /**
+     * Does not retuan an item, throws a NoSuchElementException.
+     *
      * @throws NoSuchElementException As None does not have an element inside.
      */
     @Override
@@ -154,11 +163,12 @@ public abstract class Maybe<T> {
     /**
      * Private constrcutor for None, does nothing.
      */
-    private None() { }
+    private None() {
+    }
 
     /**
      * Does nothing and returns the element U given as parameter.
-     * 
+     *
      * @param u The element to return.
      * @return u The element returned.
      */
@@ -239,7 +249,7 @@ public abstract class Maybe<T> {
 
     /**
      * Gets the item inside.
-     * 
+     *
      * @param p The producer to produce an item of type U if this is a none object.(Not used)
      * @return The item inside the Some object.
      */

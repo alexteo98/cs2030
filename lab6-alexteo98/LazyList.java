@@ -1,5 +1,5 @@
-import cs2030s.fp.Producer;
 import cs2030s.fp.Lazy;
+import cs2030s.fp.Producer;
 import cs2030s.fp.Transformer;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,8 @@ class LazyList<T> {
   /** 
    * Generate the content of the list.  Given x and a lambda f, 
    * generate the list of n lazy elements as [x, f(x), f(f(x)), f(f(f(x))), 
-   * ... ]. Only the first element is evaluated, the rest of the elements are not evaluated until called upon.
+   * ... ]. Only the first element is evaluated, 
+   * the rest of the elements are not evaluated until called upon.
    *
    * @param <T> The type of the elements in the list.
    * @param n The number of elements.
@@ -54,7 +55,7 @@ class LazyList<T> {
    * @return The element at index i.
    */
   public T get(int i) {
-     return this.list.get(i).get();
+    return this.list.get(i).get();
   }
 
   /** 

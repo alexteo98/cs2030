@@ -18,11 +18,12 @@ public class Lazy<T> {
   /** 
    * Factory method to create the Lazy object using an item of type T.
    *
+   * @param <T> The type of item to be wrapped.
    * @param v Item of type t to be wrapped with a Maybe object.
    * @return A Lazy object wrapped around a Maybe object of the parameter.
    */
-  public static final <T> Lazy<T> of(T v) { 
-    return new Lazy<T> (v);
+  public static final <T> Lazy<T> of(T v) {  
+    return new Lazy<T>(v);
   }
 
   /**
@@ -39,11 +40,12 @@ public class Lazy<T> {
    * Factory method to create the Lazy object using an item of type T
    * using a producer of type T.
    *
+   * @param <T> The type of item to be wrapped.
    * @param v Producer of type T to be evaluated later.
    * @return A Lazy object with the producer stored.. 
    */
-  public static final <T> Lazy<T> of (Producer<T> v) { 
-    return new Lazy<T> (v);
+  public static final <T> Lazy<T> of(Producer<T> v) { 
+    return new Lazy<T>(v);
   }
 
   /**
@@ -76,10 +78,11 @@ public class Lazy<T> {
    * Maps the current value to a new value using a Transformer.
    * The function is stored as a producer and is only evaluated when called by get().
    *
+   * @param <U> The type that the transformer transforms this to.
    * @param t The Transformer function to be applied to the value.
    * @return A Lazy object that stores the evaluation.
    */
-  public <U> Lazy<U> map(Transformer<? super T,? extends U> t) { 
+  public <U> Lazy<U> map(Transformer<? super T, ? extends U> t) {  
     Producer<U> p = () -> t.transform(this.get());
     return Lazy.<U>of(p);
   }
@@ -89,6 +92,7 @@ public class Lazy<T> {
    * The function is stored as a producer and is only evaluated when called by get().
    * Instead of returning a value wrapped around twice, returns the producer wrapped only once.
    *
+   * @param <U> The type that the transformer transforms this to.
    * @param t The Transformer function to be applied to the value.
    * @return A Lazy object that stores the evaluation but only wraps it once.
    */
@@ -113,11 +117,14 @@ public class Lazy<T> {
    * Combines this with another instance of Lazy. Given Lazy(y), 
    * stores an operation f(x, y) in a producer and wraps it with an Lazy Object.
    *
+   * @param <S> The type of the other Lazy object.
+   * @param <R> The type to be returned after calling f(x, y).
    * @param lazy The other lazy object to combime with.
    * @param cmb Combiner to combine the two Lazy objects with.
    * @return A Lazy Object wrapped around the producer of f(x, y).
    */
-  public <S, R> Lazy<R> combine(Lazy<? extends S> lazy, Combiner<? super T, ? super S, ? extends R> cmb) { 
+  public <S, R> Lazy<R> combine(Lazy<? extends S> lazy, 
+      Combiner<? super T, ? super S, ? extends R> cmb) { 
     Producer<R> p = () -> cmb.combine(this.get(), lazy.get());
     return Lazy.<R>of(p);
   }

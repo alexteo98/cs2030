@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"cs2030s.fp","l":"Maybe"},{"p":"cs2030s.fp","l":"Maybe.None"},{"p":"cs2030s.fp","l":"Maybe.Some"}]

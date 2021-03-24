@@ -1,6 +1,7 @@
 package cs2030s.fp;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class InfiniteList<T> {
 
@@ -13,30 +14,35 @@ public class InfiniteList<T> {
   }
 
   public static <T> InfiniteList<T> generate(Producer<T> producer) {
-    // TODO
-    return new InfiniteList<>();
+
+    T first = producer.produce();
+    Producer<InfiniteList<T>> p = () -> InfiniteList.<T>generate(producer);
+
+    return new InfiniteList<>(first, p);
   }
 
   public static <T> InfiniteList<T> iterate(T seed, Transformer<T, T> next) {
-    // TODO
-    return new InfiniteList<>();
+    Lazy<Maybe<T>> first = Lazy.of(Maybe.of(seed));
+    Producer<InfiniteList<T>> p = () -> InfiniteList.<T>iterate(next.transform(seed), next);
+    Lazy<InfiniteList<T>> rest = Lazy.of(p);
+    return new InfiniteList<>(first, rest);
   }
 
   private InfiniteList(T head, Producer<InfiniteList<T>> tail) {
-    // TODO
-    this.head = null;
-    this.tail = null;
+    this.head = Lazy.of(Maybe.of(head));
+    this.tail = Lazy.of(tail);
   }
 
   private InfiniteList(Lazy<Maybe<T>> head, Lazy<InfiniteList<T>> tail) {
     // TODO
-    this.head = null;
-    this.tail = null;
+    this.head = head;
+    this.tail = tail;
   }
 
-  public T head() {
-    // TODO
-    return null;
+  public T head() { 
+  
+    return this.head.get().get();
+
   }
 
   public InfiniteList<T> tail() {

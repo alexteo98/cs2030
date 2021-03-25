@@ -13,7 +13,7 @@ public class Lazy<T> {
   private Producer<T> producer;
 
   /** The wrapped item Maybe that might or might not contain an item. */
-  private Maybe<T> value = null;
+  private Maybe<T> value = Maybe.none();
 
   /** 
    * Factory method to create the Lazy object using an item of type T.
@@ -66,12 +66,8 @@ public class Lazy<T> {
    * @return The value stored or evaluated.
    */
   public T get() { 
-    if (value == null) { 
-      value = Maybe.of(this.producer.produce());
-      return value.orElse(null);
-    } else { 
-      return value.orElse(null);
-    }
+    this.value = Maybe.some(this.value.<T>orElseGet(this.producer));
+    return this.value.get();
   }
 
   /**
@@ -154,10 +150,6 @@ public class Lazy<T> {
    */
   @Override
   public String toString() {  
-    if (this.value == null) { 
-      return "?";
-    } else { 
-      return String.format("%s", value.orElse(null));
-    }
+    return this.value.map(String::valueOf).orElse("?");
   }
 }

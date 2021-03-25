@@ -16,7 +16,7 @@ public class InfiniteList<T> {
   public static <T> InfiniteList<T> generate(Producer<T> producer) {
     Producer<InfiniteList<T>> p = () -> InfiniteList.<T>generate(producer);
 
-    return new InfiniteList<>(() ->  producer.produce(), p);
+    return new InfiniteList<>(Lazy.of(() -> Maybe.of(producer.produce())), Lazy.of(p));
   }
 
   public static <T> InfiniteList<T> iterate(T seed, Transformer<T, T> next) {
@@ -26,8 +26,8 @@ public class InfiniteList<T> {
     return new InfiniteList<>(first, rest);
   }
 
-  private InfiniteList(Producer<T> head, Producer<InfiniteList<T>> tail) {
-    this.head = Lazy.of(() -> Maybe.of(head.produce()));
+  private InfiniteList(T head, Producer<InfiniteList<T>> tail) {
+    this.head = Lazy.of(() -> Maybe.of(head));
     this.tail = Lazy.of(tail);
   }
 

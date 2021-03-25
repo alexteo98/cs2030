@@ -15,39 +15,35 @@ public class InfiniteList<T> {
 
   public static <T> InfiniteList<T> generate(Producer<T> producer) {
 
-    T first = producer.produce();
+  //  T first = producer.produce();
     Producer<InfiniteList<T>> p = () -> InfiniteList.<T>generate(producer);
 
-    return new InfiniteList<>(first, p);
+    return new InfiniteList<>(() ->  producer.produce(), p);
   }
 
   public static <T> InfiniteList<T> iterate(T seed, Transformer<T, T> next) {
     Lazy<Maybe<T>> first = Lazy.of(Maybe.of(seed));
-    Producer<InfiniteList<T>> p = () -> InfiniteList.<T>iterate(next.transform(seed), next);
+    Producer<InfiniteList<T>> p = () -> InfiniteList.iterate(next.transform(seed), next);
     Lazy<InfiniteList<T>> rest = Lazy.of(p);
     return new InfiniteList<>(first, rest);
   }
 
-  private InfiniteList(T head, Producer<InfiniteList<T>> tail) {
-    this.head = Lazy.of(Maybe.of(head));
+  private InfiniteList(Producer<T> head, Producer<InfiniteList<T>> tail) {
+    this.head = Lazy.of(() -> Maybe.of(head.produce()));
     this.tail = Lazy.of(tail);
   }
 
   private InfiniteList(Lazy<Maybe<T>> head, Lazy<InfiniteList<T>> tail) {
-    // TODO
     this.head = head;
     this.tail = tail;
   }
 
   public T head() { 
-  
-    return this.head.get().get();
-
+    return this.head.get().orElse(null);
   }
 
   public InfiniteList<T> tail() {
-    // TODO
-    return new InfiniteList<>();
+    return this.tail.get();
   }
 
   public <R> InfiniteList<R> map(Transformer<? super T, ? extends R> mapper) {

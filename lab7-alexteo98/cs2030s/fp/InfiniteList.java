@@ -49,8 +49,12 @@ public class InfiniteList<T> {
   }
 
   public InfiniteList<T> filter(BooleanCondition<? super T> predicate) {
-    // TODO
-    return new InfiniteList<>();
+
+    if (this.head.get().filter(predicate) == Maybe.none()) { 
+       return new InfiniteList<>(this.head, Lazy.of(() -> this.tail().filter(predicate)));
+    } else  { 
+        return this.tail.get().filter(predicate);
+    }
   }
 
   public static <T> InfiniteList<T> empty() {

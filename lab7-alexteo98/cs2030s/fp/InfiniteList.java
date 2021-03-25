@@ -14,8 +14,6 @@ public class InfiniteList<T> {
   }
 
   public static <T> InfiniteList<T> generate(Producer<T> producer) {
-
-  //  T first = producer.produce();
     Producer<InfiniteList<T>> p = () -> InfiniteList.<T>generate(producer);
 
     return new InfiniteList<>(() ->  producer.produce(), p);
@@ -46,9 +44,8 @@ public class InfiniteList<T> {
     return this.tail.get();
   }
 
-  public <R> InfiniteList<R> map(Transformer<? super T, ? extends R> mapper) {
-    // TODO
-    return new InfiniteList<>();
+  public <R> InfiniteList<R> map(Transformer<? super T, ? extends R> mapper) {    
+    return new InfiniteList<R>(() -> mapper.transform(this.head()), () -> this.tail().map(mapper));
   }
 
   public InfiniteList<T> filter(BooleanCondition<? super T> predicate) {

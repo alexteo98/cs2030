@@ -5,13 +5,12 @@ class Main  {
     public static void main(String[] args)  { 
         Producer<Integer> p = () ->  { 
             System.out.println("zero called!");
-            return 0;
+            return 1;
         };
-        InfiniteList<Integer> zeros =  InfiniteList.generate(p);
-        System.out.println(zeros);
-        System.out.println(zeros.head());
-        System.out.println(zeros);
-        System.out.println(zeros.tail().head());
-        System.out.println(zeros);
+        InfiniteList<Integer> one =  InfiniteList.generate(p);
+        System.out.println(one);
+        InfiniteList<Integer> twos = one.map(x -> 2 * x);
+        System.out.println(one);
+        System.out.println(twos);
     }
 }

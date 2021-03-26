@@ -32,11 +32,16 @@ BooleanCondition<Integer> moreThan5 = x -> {
 
 //System.out.println(l.head());
 
-InfiniteList l = InfiniteList.iterate(1, incr).map(doubler).filter(moreThan5).filter(isEven);
+InfiniteList l = InfiniteList.iterate(1, incr);
+InfiniteList l1 = l.filter(isEven);
+InfiniteList l2 = l1.map(doubler);
+InfiniteList l3 = l2.filter(moreThan5);
 
-l.tail().head();
+l2.head();
 
+//System.out.println(l3.head());
 
+System.out.println(l3);
 //System.out.println(InfiniteList.iterate(1,  x -> x + 1).filter(x -> x % 2 == 0));
        // InfiniteList l = InfiniteList.iterate(1, incr).filter(isEven);
        // l.tail().head();

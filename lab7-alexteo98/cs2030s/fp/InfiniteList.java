@@ -50,7 +50,7 @@ public class InfiniteList<T> {
  }
 
   public <R> InfiniteList<R> map(Transformer<? super T, ? extends R> mapper) {    
-    return new InfiniteList<R>(Lazy.of(this.head.get().map(mapper)), Lazy.of(() -> this.tail().map(mapper)));
+    return new InfiniteList<R>(Lazy.of(() -> this.head.get().map(mapper)), Lazy.of(() -> this.tail.get().map(mapper)));
   }
 
   public InfiniteList<T> filter(BooleanCondition<? super T> predicate) {

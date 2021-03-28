@@ -72,12 +72,15 @@ public class InfiniteList<T> {
 
   public static <T> InfiniteList<T> empty() {
     // TODO
-    return new InfiniteList<>();
+    return new EmptyList<T>();
   }
 
   public InfiniteList<T> limit(long n) {
-    // TODO
-    return new InfiniteList<>();
+    if (n == 0) { 
+        return empty();
+    } else { 
+        return new InfiniteList<T>(this.head(),() -> this.tail.get().limit(n-1));
+    }
   }
 
   public InfiniteList<T> takeWhile(BooleanCondition<? super T> predicate) {
@@ -86,7 +89,7 @@ public class InfiniteList<T> {
   }
 
   public boolean isEmpty() {
-    return false;
+    return (this instanceof EmptyList);
   }
 
   public <U> U reduce(U identity, Combiner<U, ? super T, U> accumulator) {
@@ -106,5 +109,9 @@ public class InfiniteList<T> {
 
   public String toString() {
     return "[" + this.head + " " + this.tail + "]";
+  }
+
+  public static class EmptyList<T> extends InfiniteList<T> { 
+      private EmptyList() {}
   }
 }

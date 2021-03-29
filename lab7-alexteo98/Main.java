@@ -2,6 +2,7 @@ import cs2030s.fp.BooleanCondition;
 import cs2030s.fp.InfiniteList;
 import cs2030s.fp.Producer;
 import cs2030s.fp.Transformer;
+import java.util.Random;
 
 class Main  { 
     public static void main(String[] args)  { 
@@ -25,23 +26,27 @@ Transformer<Integer, Integer> doubler = x -> {
 
 BooleanCondition<Integer> moreThan5 = x -> {
       System.out.println("    filter x > 5: " + x);
-      return x > 5;
+      return x > 10;
     };
 
 //InfiniteList l = InfiniteList.iterate(1,  x -> x + 1).filter(x -> x % 2 == 0);
 
 //System.out.println(l.head());
 
-InfiniteList l = InfiniteList.iterate(1, incr);
-InfiniteList l1 = l.filter(isEven);
-InfiniteList l2 = l1.map(doubler);
-InfiniteList l3 = l2.filter(moreThan5);
+Random rng = new Random(1);
+InfiniteList<Integer> l = InfiniteList.generate(() -> rng.nextInt() % 100);
+InfiniteList l1= l.filter(moreThan5);
+InfiniteList l2= l1.limit(4);
 
-l2.head();
+//l2.head();
 
 //System.out.println(l3.head());
-
-System.out.println(l3);
+System.out.println(l);
+System.out.println(l1);
+System.out.println(l2);
+System.out.println("l2 head");
+System.out.println(l2.tail().head());
+System.out.println(l2.toList());
 //System.out.println(InfiniteList.iterate(1,  x -> x + 1).filter(x -> x % 2 == 0));
        // InfiniteList l = InfiniteList.iterate(1, incr).filter(isEven);
        // l.tail().head();

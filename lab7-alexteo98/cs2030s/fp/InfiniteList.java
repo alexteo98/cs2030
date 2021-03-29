@@ -1,5 +1,6 @@
 package cs2030s.fp;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -50,36 +51,30 @@ public class InfiniteList<T> {
  }
 
   public <R> InfiniteList<R> map(Transformer<? super T, ? extends R> mapper) {    
-    return new InfiniteList<R>(Lazy.of(() -> this.head.get().map(mapper)), Lazy.of(() -> this.tail.get().map(mapper)));
+   return new InfiniteList<R>(Lazy.of(() -> this.head.get().map(mapper)),
+        Lazy.of(() -> this.tail.get().map(mapper)));
+   
   }
 
   public InfiniteList<T> filter(BooleanCondition<? super T> predicate) {
-    if (this.head.get().filter(predicate) == Maybe.none()) { 
-        return new InfiniteList<T>(Lazy.of(() -> Maybe.none()), Lazy.of(() -> this.tail.get().filter(predicate)));
+   if (this.head.get().filter(predicate) == Maybe.none()) { 
+        return new InfiniteList<T>(Lazy.of(() -> Maybe.none()),
+            Lazy.of(() -> this.tail.get().filter(predicate)));
     } else { 
-    return new InfiniteList<T>(Lazy.of(() -> this.head.get()), Lazy.of(() -> this.tail.get().filter(predicate)));
-
+    return new InfiniteList<T>(Lazy.of(() -> this.head.get()),
+        Lazy.of(() -> this.tail.get().filter(predicate)));
     }
-/*    if (this.head.get().filter(predicate) != Maybe.none()) { 
-       return new InfiniteList<>(Lazy.of(() -> Maybe.of(this.head())), Lazy.of(() -> this.tail().filter(predicate)));
-    } else  { 
-        return new InfiniteList<>(Lazy.of(() -> Maybe.none()), Lazy.of(() -> this.tail.get().filter(predicate)));
-    }
-  */  
-
-//    return new InfiniteList<>(Lazy.of(Lazy.of(this.head.filter(predicate))), Lazy.of(() -> this.tail().filter(predicate)));
   }
 
   public static <T> InfiniteList<T> empty() {
-    // TODO
     return new EmptyList<T>();
   }
 
   public InfiniteList<T> limit(long n) {
-    if (n == 0) { 
+    if (n <= 0) { 
         return empty();
     } else { 
-        return new InfiniteList<T>(this.head(),() -> this.tail.get().limit(n-1));
+        return new InfiniteList<T>(this.head(),() -> this.tail().limit(n-1));
     }
   }
 
@@ -98,13 +93,15 @@ public class InfiniteList<T> {
   }
 
   public long count() {
-    // TODO
+    // TODo
     return 0;
   }
 
   public List<T> toList() {
-    // TODO
-    return List.of();
+    List<T> ls = new ArrayList<>();
+    ls.add(this.head());
+    ls.addAll(this.tail().toList());
+    return ls;
   }
 
   public String toString() {
@@ -113,5 +110,30 @@ public class InfiniteList<T> {
 
   public static class EmptyList<T> extends InfiniteList<T> { 
       private EmptyList() {}
+
+      @Override
+      public T head() throws NoSuchElementException { 
+          throw new NoSuchElementException();
+      }
+
+      @Override
+      public InfiniteList<T> filter(BooleanCondition<? super T> predicate) { 
+          return empty();
+      }
+
+      @Override
+      public <R> InfiniteList<R> map(Transformer<? super T, ? extends R> mapper) { 
+          return empty();
+      }
+
+      @Override
+      public InfiniteList<T> limit(long n) { 
+          return empty();
+      }
+
+      @Override
+      public List<T> toList() { 
+          return new ArrayList<T>();
+      }
   }
 }

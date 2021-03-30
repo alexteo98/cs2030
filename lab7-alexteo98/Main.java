@@ -24,29 +24,33 @@ Transformer<Integer, Integer> doubler = x -> {
      return x * 2;
   };
 
-BooleanCondition<Integer> moreThan5 = x -> {
-      System.out.println("    filter x > 5: " + x);
-      return x > 10;
+BooleanCondition<Integer> lessThan2 = x -> {
+      System.out.println("    filter x < 2: " + x);
+      return x < 2;
     };
 
 //InfiniteList l = InfiniteList.iterate(1,  x -> x + 1).filter(x -> x % 2 == 0);
 
 //System.out.println(l.head());
 
-Random rng = new Random(1);
-InfiniteList<Integer> l = InfiniteList.generate(() -> rng.nextInt() % 100);
-InfiniteList l1= l.filter(moreThan5);
-InfiniteList l2= l1.limit(4);
+//InfiniteList.iterate(1, x -> x + 1).takeWhile(x -> x < 0).isEmpty()
+
+//InfiniteList.iterate(1, x -> x + 1).takeWhile(x -> x < 2).isEmpty()
+
+InfiniteList<Integer> l = InfiniteList.iterate(1, x -> x + 1);
+InfiniteList l1= l.takeWhile(lessThan2);
+//InfiniteList l2= l1.limit(4);
 
 //l2.head();
 
 //System.out.println(l3.head());
 System.out.println(l);
 System.out.println(l1);
-System.out.println(l2);
-System.out.println("l2 head");
-System.out.println(l2.tail().head());
-System.out.println(l2.toList());
+//System.out.println(l2);
+//System.out.println("l2 head");
+//System.out.println(l2.tail().head());
+System.out.println(l1.isEmpty());
+System.out.println(l1.toList());
 //System.out.println(InfiniteList.iterate(1,  x -> x + 1).filter(x -> x % 2 == 0));
        // InfiniteList l = InfiniteList.iterate(1, incr).filter(isEven);
        // l.tail().head();

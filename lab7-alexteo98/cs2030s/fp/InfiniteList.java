@@ -79,22 +79,39 @@ public class InfiniteList<T> {
   }
 
   public InfiniteList<T> takeWhile(BooleanCondition<? super T> predicate) {
-    // TODO
-    return new InfiniteList<>();
+ 
+    Producer<InfiniteList<T>> p = () ->  { 
+      System.out.println("Testing:" + this.head().toString());  
+      if (predicate.test(this.head())) { 
+            return this.tail().takeWhile(predicate);
+        } else { 
+            return empty();
+        }
+    };
+
+    if (predicate.test(this.head())) { 
+//        return new InfiniteList<T>(Lazy.of(() -> this.head.get().filter(predicate)),
+//        Lazy.of(p));
+          return new InfiniteList<T>(this.head(), () -> this.tail().takeWhile(predicate));
+    } else { 
+        return empty();
+    }
   }
 
   public boolean isEmpty() {
-    return (this instanceof EmptyList);
+    return false;
   }
 
   public <U> U reduce(U identity, Combiner<U, ? super T, U> accumulator) {
-    // TODO
-    return null;
+//    if (this.tail().isEmpty()) { 
+//        return identity;
+//    } else { 
+        return this.tail().reduce(accumulator.combine(identity, this.head()), accumulator);
+//    }
   }
 
   public long count() {
-    // TODo
-    return 0;
+    return 1 + this.tail().count();
   }
 
   public List<T> toList() {
@@ -122,6 +139,11 @@ public class InfiniteList<T> {
       }
 
       @Override
+      public boolean isEmpty() { 
+          return true;
+      }
+
+      @Override
       public <R> InfiniteList<R> map(Transformer<? super T, ? extends R> mapper) { 
           return empty();
       }
@@ -135,5 +157,21 @@ public class InfiniteList<T> {
       public List<T> toList() { 
           return new ArrayList<T>();
       }
-  }
+
+      @Override
+      public InfiniteList<T> takeWhile(BooleanCondition<? super T> predicate)  { 
+          return empty();
+      }
+
+      @Override
+      public long count() { 
+          return 0;
+      }
+
+      @Override
+      public <U> U reduce(U identity, Combiner<U, ? super T, U> accumulator) {
+          return identity;
+      }
+
+ }
 }

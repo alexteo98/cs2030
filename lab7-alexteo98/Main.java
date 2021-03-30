@@ -24,9 +24,9 @@ Transformer<Integer, Integer> doubler = x -> {
      return x * 2;
   };
 
-BooleanCondition<Integer> lessThan2 = x -> {
-      System.out.println("    filter x < 2: " + x);
-      return x < 2;
+BooleanCondition<Integer> lessThan10 = x -> {
+      System.out.println("    filter x < 10: " + x);
+      return x < 10;
     };
 
 //InfiniteList l = InfiniteList.iterate(1,  x -> x + 1).filter(x -> x % 2 == 0);
@@ -37,20 +37,20 @@ BooleanCondition<Integer> lessThan2 = x -> {
 
 //InfiniteList.iterate(1, x -> x + 1).takeWhile(x -> x < 2).isEmpty()
 
-InfiniteList<Integer> l = InfiniteList.iterate(1, x -> x + 1);
-InfiniteList l1= l.takeWhile(lessThan2);
-//InfiniteList l2= l1.limit(4);
+InfiniteList<Integer> l = InfiniteList.iterate(0, incr);
+InfiniteList l1= l.takeWhile(lessThan10);
+InfiniteList l2= l1.filter(isEven);
 
 //l2.head();
 
 //System.out.println(l3.head());
 System.out.println(l);
 System.out.println(l1);
-//System.out.println(l2);
+System.out.println(l2);
 //System.out.println("l2 head");
 //System.out.println(l2.tail().head());
-System.out.println(l1.isEmpty());
-System.out.println(l1.toList());
+System.out.println(l2.count());
+//System.out.println(l1.toList());
 //System.out.println(InfiniteList.iterate(1,  x -> x + 1).filter(x -> x % 2 == 0));
        // InfiniteList l = InfiniteList.iterate(1, incr).filter(isEven);
        // l.tail().head();

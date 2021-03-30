@@ -79,19 +79,29 @@ public class InfiniteList<T> {
   }
 
   public InfiniteList<T> takeWhile(BooleanCondition<? super T> predicate) {
- 
+   Lazy<Maybe<Boolean>> test= Lazy.of(() -> Maybe.of(this.head.get().filter(predicate) == Maybe.none()));
+
     Producer<InfiniteList<T>> p = () ->  { 
       System.out.println("Testing:" + this.head().toString());  
-      if (predicate.test(this.head())) { 
+      if (test.get().get()) { 
             return this.tail().takeWhile(predicate);
         } else { 
             return empty();
         }
     };
 
+    Producer<Maybe<T>> pM = () ->  { 
+      if (test.get().get()) { 
+          return this.head.get();
+      } else { 
+          return Maybe.none();
+      }
+    };
+
+
+  
     if (predicate.test(this.head())) { 
-//        return new InfiniteList<T>(Lazy.of(() -> this.head.get().filter(predicate)),
-//        Lazy.of(p));
+//        return new InfiniteList<T>(Lazy.of(pM), Lazy.of(p));
           return new InfiniteList<T>(this.head(), () -> this.tail().takeWhile(predicate));
     } else { 
         return empty();

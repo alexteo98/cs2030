@@ -83,7 +83,7 @@ public class InfiniteList<T> {
 
     Producer<InfiniteList<T>> p = () ->  { 
       System.out.println("Testing:" + this.head().toString());  
-      if (test.get().get()) { 
+      if (predicate.test(this.head.get().get())) { 
             return this.tail().takeWhile(predicate);
         } else { 
             return empty();
@@ -91,18 +91,21 @@ public class InfiniteList<T> {
     };
 
     Producer<Maybe<T>> pM = () ->  { 
-      if (test.get().get()) { 
+      if (predicate.test(this.head.get().get())) { 
           return this.head.get();
       } else { 
           return Maybe.none();
       }
     };
 
-
-  
     if (predicate.test(this.head())) { 
-//        return new InfiniteList<T>(Lazy.of(pM), Lazy.of(p));
-          return new InfiniteList<T>(this.head(), () -> this.tail().takeWhile(predicate));
+    //    return new InfiniteList<T>(Lazy.of(pM), Lazy.of(p));
+        return new InfiniteList<T>(
+            Lazy.of(() -> predicate.test(this.head.get().get()) ?
+              this.head.get(): Maybe.none()), 
+            Lazy.of(() -> predicate.test(this.head.get().get()) ?
+              this.tail().takeWhile(predicate): empty()));
+//          return new InfiniteList<T>(this.head(), () -> this.tail().takeWhile(predicate));
     } else { 
         return empty();
     }

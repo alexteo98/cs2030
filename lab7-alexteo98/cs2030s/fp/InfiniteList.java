@@ -79,11 +79,15 @@ public class InfiniteList<T> {
   }
 
   public InfiniteList<T> takeWhile(BooleanCondition<? super T> predicate) {
-   Lazy<Maybe<Boolean>> test= Lazy.of(() -> Maybe.of(this.head.get().filter(predicate) == Maybe.none()));
+   Lazy<Maybe<Boolean>> test= Lazy.of(() -> Maybe.<Boolean>of(
+         this.head.get()
+         .filter(predicate)
+         .map(x -> true)
+         .orElse(false)));
 
     Producer<InfiniteList<T>> p = () ->  { 
-      System.out.println("Testing:" + this.head().toString());  
-      if (predicate.test(this.head.get().get())) { 
+//      System.out.println("Testing:" + this.head().toString());  
+      if (test.get().orElse(false)) { 
             return this.tail().takeWhile(predicate);
         } else { 
             return empty();
@@ -91,24 +95,24 @@ public class InfiniteList<T> {
     };
 
     Producer<Maybe<T>> pM = () ->  { 
-      if (predicate.test(this.head.get().get())) { 
+      if (test.get().orElse(false)) { 
           return this.head.get();
       } else { 
           return Maybe.none();
       }
     };
 
-    if (predicate.test(this.head())) { 
-    //    return new InfiniteList<T>(Lazy.of(pM), Lazy.of(p));
-        return new InfiniteList<T>(
-            Lazy.of(() -> predicate.test(this.head.get().get()) ?
-              this.head.get(): Maybe.none()), 
-            Lazy.of(() -> predicate.test(this.head.get().get()) ?
-              this.tail().takeWhile(predicate): empty()));
+  //  if (predicate.test(this.head())) { 
+        return new InfiniteList<T>(Lazy.of(pM), Lazy.of(p));
+    //    return new InfiniteList<T>(
+      //      Lazy.of(() -> predicate.test(this.head.get().get()) ?
+      //        this.head.get(): Maybe.none()), 
+      //      Lazy.of(() -> predicate.test(this.head.get().get()) ?
+      //        this.tail().takeWhile(predicate): empty()));
 //          return new InfiniteList<T>(this.head(), () -> this.tail().takeWhile(predicate));
-    } else { 
-        return empty();
-    }
+  //  } else { 
+//        return empty();
+  //  }
   }
 
   public boolean isEmpty() {

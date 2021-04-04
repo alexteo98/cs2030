@@ -44,26 +44,21 @@ public class InfiniteList<T> {
   public InfiniteList<T> tail() {
 
     if (this.head.get() == Maybe.none()) { 
-        return this.tail.get().tail();
+      return this.tail.get().tail();
     } else { 
-       return this.tail.get();
+      return this.tail.get();
     }
- }
+  }
 
   public <R> InfiniteList<R> map(Transformer<? super T, ? extends R> mapper) {    
-   return new InfiniteList<R>(Lazy.of(() -> this.head.get().map(mapper)),
+    return new InfiniteList<R>(Lazy.of(() -> this.head.get().map(mapper)),
         Lazy.of(() -> this.tail.get().map(mapper)));
-   
+
   }
 
   public InfiniteList<T> filter(BooleanCondition<? super T> predicate) {
-   if (this.head.get().filter(predicate) == Maybe.none()) { 
-        return new InfiniteList<T>(Lazy.of(() -> Maybe.none()),
-            Lazy.of(() -> this.tail.get().filter(predicate)));
-    } else { 
-    return new InfiniteList<T>(Lazy.of(() -> this.head.get()),
-        Lazy.of(() -> this.tail.get().filter(predicate)));
-    }
+    return new InfiniteList<>(Lazy.of(() -> this.head.get().filter(predicate)), 
+        Lazy.of (() -> this.tail.get().filter(predicate)));
   }
 
   public static <T> InfiniteList<T> empty() {
@@ -72,47 +67,24 @@ public class InfiniteList<T> {
 
   public InfiniteList<T> limit(long n) {
     if (n <= 0) { 
-        return empty();
+      return empty();
     } else { 
-        return new InfiniteList<T>(this.head(),() -> this.tail().limit(n-1));
+      if (this.head.get() == Maybe.none()) { 
+        return this.tail.get().limit(n);
+      } else { 
+        return new InfiniteList<T>(this.head, Lazy.of(() -> this.tail.get().limit(n-1)));
+      }
     }
   }
 
   public InfiniteList<T> takeWhile(BooleanCondition<? super T> predicate) {
-   Lazy<Maybe<Boolean>> test= Lazy.of(() -> Maybe.<Boolean>of(
-         this.head.get()
-         .filter(predicate)
-         .map(x -> true)
-         .orElse(false)));
 
-    Producer<InfiniteList<T>> p = () ->  { 
-//      System.out.println("Testing:" + this.head().toString());  
-      if (test.get().orElse(false)) { 
-            return this.tail().takeWhile(predicate);
-        } else { 
-            return empty();
-        }
-    };
+    Lazy<Boolean> result = Lazy.of(() -> this.head()).filter(predicate);
+    Lazy<Maybe<T>> h = Lazy.of(() -> result.get() ? Maybe.some(this.head()) : Maybe.none());
+    Lazy<InfiniteList<T>> t = Lazy.of(() -> result.get() ?
+        this.tail().takeWhile(predicate) : empty());
 
-    Producer<Maybe<T>> pM = () ->  { 
-      if (test.get().orElse(false)) { 
-          return this.head.get();
-      } else { 
-          return Maybe.none();
-      }
-    };
-
-  //  if (predicate.test(this.head())) { 
-        return new InfiniteList<T>(Lazy.of(pM), Lazy.of(p));
-    //    return new InfiniteList<T>(
-      //      Lazy.of(() -> predicate.test(this.head.get().get()) ?
-      //        this.head.get(): Maybe.none()), 
-      //      Lazy.of(() -> predicate.test(this.head.get().get()) ?
-      //        this.tail().takeWhile(predicate): empty()));
-//          return new InfiniteList<T>(this.head(), () -> this.tail().takeWhile(predicate));
-  //  } else { 
-//        return empty();
-  //  }
+    return new InfiniteList(h, t);
   }
 
   public boolean isEmpty() {
@@ -120,21 +92,24 @@ public class InfiniteList<T> {
   }
 
   public <U> U reduce(U identity, Combiner<U, ? super T, U> accumulator) {
-//    if (this.tail().isEmpty()) { 
-//        return identity;
-//    } else { 
-        return this.tail().reduce(accumulator.combine(identity, this.head()), accumulator);
-//    }
+    return this.tail().reduce(accumulator.combine(identity, this.head()), accumulator);
   }
 
   public long count() {
-    return 1 + this.tail().count();
+    if (this.head.get() == Maybe.none()) { 
+      return this.tail.get().count();
+    } else { 
+      return 1 + this.tail.get().count();
+    }
   }
 
   public List<T> toList() {
     List<T> ls = new ArrayList<>();
-    ls.add(this.head());
-    ls.addAll(this.tail().toList());
+    if (this.head.get() == Maybe.none()) {  }
+    else { 
+      ls.add(this.head());
+    }
+    ls.addAll(this.tail.get().toList());
     return ls;
   }
 
@@ -143,52 +118,56 @@ public class InfiniteList<T> {
   }
 
   public static class EmptyList<T> extends InfiniteList<T> { 
-      private EmptyList() {}
+    private EmptyList() {}
 
-      @Override
-      public T head() throws NoSuchElementException { 
-          throw new NoSuchElementException();
-      }
+    @Override
+    public T head() throws NoSuchElementException { 
+      throw new NoSuchElementException();
+    }
 
-      @Override
-      public InfiniteList<T> filter(BooleanCondition<? super T> predicate) { 
-          return empty();
-      }
+    @Override
+    public InfiniteList<T> tail() { 
+      return empty();
+    }
 
-      @Override
-      public boolean isEmpty() { 
-          return true;
-      }
+    @Override
+    public InfiniteList<T> filter(BooleanCondition<? super T> predicate) { 
+      return empty();
+    }
 
-      @Override
-      public <R> InfiniteList<R> map(Transformer<? super T, ? extends R> mapper) { 
-          return empty();
-      }
+    @Override
+    public boolean isEmpty() { 
+      return true;
+    }
 
-      @Override
-      public InfiniteList<T> limit(long n) { 
-          return empty();
-      }
+    @Override
+    public <R> InfiniteList<R> map(Transformer<? super T, ? extends R> mapper) { 
+      return empty();
+    }
 
-      @Override
-      public List<T> toList() { 
-          return new ArrayList<T>();
-      }
+    @Override
+    public InfiniteList<T> limit(long n) { 
+      return empty();
+    }
 
-      @Override
-      public InfiniteList<T> takeWhile(BooleanCondition<? super T> predicate)  { 
-          return empty();
-      }
+    @Override
+    public List<T> toList() { 
+      return new ArrayList<T>();
+    }
 
-      @Override
-      public long count() { 
-          return 0;
-      }
+    @Override
+    public InfiniteList<T> takeWhile(BooleanCondition<? super T> predicate)  { 
+      return empty();
+    }
 
-      @Override
-      public <U> U reduce(U identity, Combiner<U, ? super T, U> accumulator) {
-          return identity;
-      }
+    @Override
+    public long count() { 
+      return 0;
+    }
 
- }
+    @Override
+    public <U> U reduce(U identity, Combiner<U, ? super T, U> accumulator) {
+      return identity;
+    }
+  }
 }

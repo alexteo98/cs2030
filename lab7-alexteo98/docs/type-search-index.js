@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"cs2030s.fp","l":"InfiniteList.EmptyList"},{"p":"cs2030s.fp","l":"InfiniteList"}]

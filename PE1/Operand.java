@@ -5,7 +5,7 @@
  * @author A0221444R
  */
 
-class Operand<T> { 
+class Operand<T> implements Evaluatable<T>{ 
 
   T operand;
 

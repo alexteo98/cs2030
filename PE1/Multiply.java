@@ -4,16 +4,26 @@
  *
  * @author A0221444R
  */
-class Multiply extends Operation<Integer>  { 
-  private Integer op1;
-  private Integer op2;
+class Multiply extends Operation<Integer> implements Evaluatable<Integer> { 
+  private Evaluatable op1;
+  private Evaluatable op2;
 
-  public Multiply(Operand<Integer> op1, Operand<Integer> op2) { 
-    this.op1 = op1.eval();
-    this.op2 = op2.eval();
+  public Multiply(Evaluatable e1, Evaluatable e2) { 
+    super(e1, e2);
+    this.op1 = e1;
+    this.op2 = e2;
   }
 
-  public Integer eval() { 
-    return this.op1 * this.op2;
+  @Override
+  public Integer eval() throws InvalidOperandException { 
+    Object o1 = this.op1.eval();
+    Object o2 = this.op2.eval();
+    if (!(o1 instanceof Integer) || !(o2 instanceof Integer)) { 
+        throw new InvalidOperandException('*');
+    } else { 
+        Integer i1 = (Integer) o1;
+        Integer i2 = (Integer) o2;
+        return i1 * i2;
+    }
   }
 }

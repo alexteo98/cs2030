@@ -6,9 +6,9 @@
  */
 interface SourceList<T> {
   T getFirst();
-
-  SourceList<T> getSecond();
-
-  // Write your code here
+  SourceList<T> getRest();
+ 
   int length();
+  SourceList<T> filter(BooleanCondition<? super T> predicate);
+  <R> SourceList<R> map(Transformer<? super T, ? extends R> tr);
 }

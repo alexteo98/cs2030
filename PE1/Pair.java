@@ -5,55 +5,50 @@
  * @author A0221444R
  */
 public class Pair<T> implements SourceList<T> { 
-  private T first;
-  private SourceList<T> second;
-  //private currentLen = 0;
 
-  public Pair(T first, SourceList<T> second) { 
+  private T first;
+  private SourceList<T> rest;
+
+  public Pair(T first, SourceList<T> rest) { 
     this.first = first;
-    this.second = second;
+    this.rest = rest;
   }
 
-  @Override
+  public int length() { 
+    return 1 + this.rest.length();
+  }
+
   public T getFirst() { 
     return this.first;
   }
+  public SourceList<T> getRest() { 
+    return this.rest;
+  }
+  public SourceList<T> filter(BooleanCondition<? super T> predicate) { 
+    if (predicate.test(this.first)) { 
+      return new Pair<>(this.first, this.rest.filter(predicate));
+    } else {
+      return this.rest.filter(predicate);
+    }
+  }
 
-  @Override
-  public SourceList<T> getSecond() { 
-    return this.second;
+  public <R> SourceList<R> map(Transformer<? super T, ? extends R> tr) { 
+      return new Pair<R>(tr.transform(this.first), this.rest.map(tr));
   }
 
   @Override
-  public String toString() { 
-    return this.first + ", " + this.second;
-  }
-  // Write your code here
-  
-  public int length() { 
-    return 1 + getSecond().length();
-  }
-
-  public boolean equals(Object p) { 
-    if (p instanceof Pair) { 
+  public boolean equals(Object o) { 
+    if (o instanceof Pair) { 
       @SuppressWarnings("unchecked")
-      Pair p1 = (Pair) p;
-      if (p1.getFirst().equals(this.getFirst())) { 
-        return p1.getSecond().equals(this.getSecond());
-      } else  { 
-        return false;
-      }
+      Pair<?> p = (Pair<?>) o;
+      return this.first.equals(p.first) && this.rest.equals(p.rest);
     } else  { 
       return false;
     }
   }
 
-  public SourceList<T> filter(BooleanCondition<? super T> bc) { 
-    if (bc.test(this.first)) {  
-      return new pair<T>(this.getFirst(), this.getSecond().filter(bc));
-    } else  { 
-      return this.getSecond().filter(bc);
-    }
+  @Override
+  public String toString() { 
+      return String.format("%s, %s", this.first, this.rest);
   }
-
 }

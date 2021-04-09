@@ -1,4 +1,4 @@
-/**
+/*
  * CS2030S PE1 Question 2
  * AY20/21 Semester 2
  *
@@ -6,14 +6,14 @@
  */
 public class EmptyList<T> implements SourceList<T> {
 
-  @Override
+  public EmptyList() {  }
+
   public T getFirst() {
     return null;
   }
 
-  @Override
-  public SourceList<T> getSecond() {
-    return null;
+  public SourceList<T> getRest() {
+    return new EmptyList<T>();
   }
 
   @Override
@@ -26,15 +26,18 @@ public class EmptyList<T> implements SourceList<T> {
     return 0;
   }
 
+  public SourceList<T> filter(BooleanCondition<? super T> predicate) { 
+      return new EmptyList<>();
+  }
+  public <R> SourceList<R> map(Transformer<? super T, ? extends R> tr) { 
+      return new EmptyList<>();
+  }
+
   public boolean equals(Object s) { 
     if (s instanceof EmptyList) { 
       return true; 
     } else { 
       return false;
     }
-  }
-
-  public SourceList<T> filter(BooleanCondition<? super T> bc) { 
-    return new EmptyList();
   }
 }

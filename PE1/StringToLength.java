@@ -4,3 +4,10 @@
  *
  * @author A0000000X
  */
+
+class StringToLength implements Transformer<String, Integer> { 
+  public StringToLength(){};
+  public Integer transform(String s) { 
+        return s.length();
+    }
+}

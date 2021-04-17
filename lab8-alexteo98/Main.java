@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
  * @author: Ooi Wei Tsang
  * @version: CS2030S AY20/21 Semester 2, Lab 8
  */
+
 public class Main {
   /**
    * The program read a sequence of (id, search string) from either
@@ -18,7 +19,7 @@ public class Main {
    * program would quit with an error message.
    * @param args Command line arguments
    */
-  public static void main(String[] args) throws Throwable{
+  public static void main(String[] args) {
     Instant start = Instant.now();
     try {
       Scanner sc = createScanner(args);
@@ -26,13 +27,9 @@ public class Main {
         BusStop srcId = new BusStop(sc.next());
         String searchString = sc.next();
         CompletableFuture.allOf(BusSg.findBusServicesBetween(srcId, searchString)
-            .thenApply(x -> x.description())
-            .join()            
-            .thenAccept(x -> System.out.println(x))).get();
-
-     //   System.out.println(BusSg.findBusServicesBetween(srcId, searchString).description());
-     //
-//        System.out.println("yo");
+            .thenCompose(x -> x.description())            
+            .thenAccept(x -> System.out.println(x)))
+            .join();
       }
       sc.close();
     } catch (FileNotFoundException exception) {

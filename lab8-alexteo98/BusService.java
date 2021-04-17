@@ -1,15 +1,15 @@
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * BusService encapsulate a bus service with a String id.  It supports
  * querying for the list of bus stops served by this service.
  *
- * @author: Ooi Wei Tsang
- * @version: CS2030S AY20/21 Semester 2, Lab 8
+ * @author: Alex Teo
+ * @version: CS2030S AY20/21 Semester 2, Lab 16A
  */
 class BusService {
   private final String serviceId;
@@ -39,15 +39,6 @@ class BusService {
                             .map(line -> line.split(","))
                             .map(fields -> new BusStop(fields[0], fields[1]))
                             .collect(Collectors.toSet()));
-/*
-    Scanner sc = new Scanner(BusAPI.getBusStopsServedBy(serviceId));
-    Set<BusStop> stops = sc.useDelimiter("\n")
-        .tokens()
-        .map(line -> line.split(","))
-        .map(fields -> new BusStop(fields[0], fields[1]))
-        .collect(Collectors.toSet());
-    sc.close();
-    return stops;*/
   }
 
   /**
@@ -60,12 +51,7 @@ class BusService {
       getBusStops().thenApply(x -> x.stream())
                    .thenApply(x -> x.filter(stop -> stop.matchName(name)))
                    .<Set<BusStop>>thenApply(x -> x.collect(Collectors.toSet()));
-/*
-    return getBusStops()
-       .stream()
-       .filter(stop -> stop.matchName(name))
-       .collect(Collectors.toSet());
-*/  }
+  }
 
   /**
    * Return the hash code of this bus service.

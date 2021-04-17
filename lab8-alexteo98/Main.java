@@ -3,7 +3,7 @@ import java.io.FileReader;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Scanner;
-
+import java.util.concurrent.CompletableFuture;
 /**
  * This program finds different ways one can travel by bus (with a bit 
  * of walking) from one bus stop to another.
@@ -25,7 +25,10 @@ public class Main {
       while (sc.hasNext()) {
         BusStop srcId = new BusStop(sc.next());
         String searchString = sc.next();
-        System.out.println(BusSg.findBusServicesBetween(srcId, searchString).description());
+        CompletableFuture.allOf(BusSg.findBusServicesBetween(srcId, searchString)
+            .thenCompose(x -> x.description())
+            .thenAccept(x -> System.out.println(x)));
+     //   System.out.println(BusSg.findBusServicesBetween(srcId, searchString).description());
       }
       sc.close();
     } catch (FileNotFoundException exception) {

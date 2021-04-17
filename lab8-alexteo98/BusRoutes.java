@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 class BusRoutes {
   final BusStop stop;
   final String name;
-  final Map<BusService, CompletableFuture<Set<BusStop>>> services;
+  final CompletableFuture<Map<BusService, CompletableFuture<Set<BusStop>>>> services;
 
   /**
    * Constructor for creating a bus route.
@@ -23,7 +23,7 @@ class BusRoutes {
    * @param name The second bus stop.
    * @param services The set of bus services between the two stops.
    */
-  BusRoutes(BusStop stop, String name, Map<BusService, CompletableFuture<Set<BusStop>>> services) {
+  BusRoutes(BusStop stop, String name, CompletableFuture<Map<BusService, CompletableFuture<Set<BusStop>>>> services) {
     this.stop = stop;
     this.name = name;
     this.services = services;
@@ -39,23 +39,49 @@ class BusRoutes {
     String result = "Search for: " + this.stop + " <-> " + name + ":\n" + "From " +  this.stop + "\n";
 
     CompletableFuture<String> CFResult = CompletableFuture.<String>supplyAsync(() -> result);
-    CompletableFuture<String> identity = CompletableFuture.<String>supplyAsync(() -> "");
+    /*    CompletableFuture<String> identity = CompletableFuture.<String>supplyAsync(() -> "");
 
-    for (BusService service : services.keySet()) {
-      CompletableFuture<String> stops = services.get(service)
-                 .thenApply(x -> describeService(service, x));
+          for (BusService service : services.keySet()) {
+          CompletableFuture<String> stops = services.get(service)
+          .thenApply(x -> describeService(service, x));
+
+          identity.thenCombine(identity, (x, y) -> x + y);
+
+          }*/
+
+   /* CompletableFuture<String> decompose(Map<BusService, CompletableFuture<Set<BusStop>>> services) { 
+      CompletableFuture<String> identity = CompletableFuture.<String>supplyAsync(() -> "");
+
+      for (BusService service : services.keySet()) {
+        CompletableFuture<String> stops = services.get(service)
+          .thenApply(x -> describeService(service, x));
+
+        identity.thenCombine(identity, (x, y) -> x + y);
+        return identity;
+      }
+    }*/
+return
+    this.services.<String>thenCompose(x -> { 
+      CompletableFuture<String> identity = CompletableFuture.<String>supplyAsync(() -> "");
+
+      for (BusService service : x.keySet()) {
+        CompletableFuture<String> stops = x.get(service)
+          .thenApply(y -> describeService(service, y));
+      }
+        identity.thenCombine(identity, (a, b) -> a + b);
+        return identity;
       
-      identity.thenCombine(identity, (x, y) -> x + y);
+    })
+                 .thenCombine(CFResult, (x, y) -> x + y);
 
-    }
-/*
-   CompletableFuture.supplyAsync(result);
-   
-   CompletableFuture<String> = stops.thenApply(x -> describeService(service, x));
+    /*
+       CompletableFuture.supplyAsync(result);
 
-   thenCombine("", (x, y) -> x + describeService() )
-*/
-    return CFResult.thenCombine(CFResult, (x, y) -> x + y);
+       CompletableFuture<String> = stops.thenApply(x -> describeService(service, x));
+
+       thenCombine("", (x, y) -> x + describeService() )
+       */
+    //return CFResult.thenCombine(CFResult, (x, y) -> x + y);
   }
 
   /**
@@ -69,9 +95,9 @@ class BusRoutes {
       return "";
     } 
     return stops.stream()
-        .filter(stop -> stop != this.stop) 
-        .reduce("- Can take " + service + " to:\n",
-            (str, stop) -> str += "  - " + stop + "\n",
-            (str1, str2) -> str1 + str2);
+      .filter(stop -> stop != this.stop) 
+      .reduce("- Can take " + service + " to:\n",
+          (str, stop) -> str += "  - " + stop + "\n",
+          (str1, str2) -> str1 + str2);
   }
 }

@@ -2,7 +2,7 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
-
+import java.util.concurrent.CompletableFuture;
 
 /**
  * BusService encapsulate a bus service with a String id.  It supports
@@ -28,7 +28,18 @@ class BusService {
    * if bus stops are not retrieved before.
    * @return A set of bus stops that this bus services serves.
    */
-  public Set<BusStop> getBusStops() {
+  public CompletableFuture<Set<BusStop>> getBusStops() {
+    
+    return
+      BusAPI.getBusStopsServedBy(serviceId)
+        .thenApply(x -> new Scanner(x))
+        .<Set<BusStop>>thenApply(x -> x
+                            .useDelimiter("\n")
+                            .tokens()
+                            .map(line -> line.split(","))
+                            .map(fields -> new BusStop(fields[0], fields[1]))
+                            .collect(Collectors.toSet()));
+/*
     Scanner sc = new Scanner(BusAPI.getBusStopsServedBy(serviceId));
     Set<BusStop> stops = sc.useDelimiter("\n")
         .tokens()
@@ -36,7 +47,7 @@ class BusService {
         .map(fields -> new BusStop(fields[0], fields[1]))
         .collect(Collectors.toSet());
     sc.close();
-    return stops;
+    return stops;*/
   }
 
   /**
@@ -44,12 +55,18 @@ class BusService {
    * @param  name Name (possibly partial) of a bus stop.
    * @return A list of bus stops matching the given name.
    */
-  public Set<BusStop> findStopsWith(String name) {
+  public CompletableFuture<Set<BusStop>> findStopsWith(String name) {
+    
+    return
+      getBusStops().thenApply(x -> x.stream())
+                   .thenApply(x -> x.filter(stop -> stop.matchName(name)))
+                   .<Set<BusStop>>thenApply(x -> x.collect(Collectors.toSet()));
+/*
     return getBusStops()
        .stream()
        .filter(stop -> stop.matchName(name))
        .collect(Collectors.toSet());
-  }
+*/  }
 
   /**
    * Return the hash code of this bus service.

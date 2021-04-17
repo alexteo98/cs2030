@@ -1,5 +1,6 @@
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Encapsulates the result of a query: for a bus stop and a search string,
@@ -14,7 +15,7 @@ import java.util.Set;
 class BusRoutes {
   final BusStop stop;
   final String name;
-  final Map<BusService, Set<BusStop>> services;
+  final Map<BusService, CompletableFuture<Set<BusStop>>> services;
 
   /**
    * Constructor for creating a bus route.
@@ -22,7 +23,7 @@ class BusRoutes {
    * @param name The second bus stop.
    * @param services The set of bus services between the two stops.
    */
-  BusRoutes(BusStop stop, String name, Map<BusService, Set<BusStop>> services) {
+  BusRoutes(BusStop stop, String name, Map<BusService, CompletableFuture<Set<BusStop>>> services) {
     this.stop = stop;
     this.name = name;
     this.services = services;
@@ -34,15 +35,27 @@ class BusRoutes {
    *     bus stop id and search string.  The remaining line contains 
    *     the bus services and matching stops served.
    */
-  public String description() {
-    String result = "Search for: " + this.stop + " <-> " + name + ":\n";
-    result += "From " +  this.stop + "\n";
+  public CompletableFuture<String> description() {
+    String result = "Search for: " + this.stop + " <-> " + name + ":\n" + "From " +  this.stop + "\n";
+
+    CompletableFuture<String> CFResult = CompletableFuture.<String>supplyAsync(() -> result);
+    CompletableFuture<String> identity = CompletableFuture.<String>supplyAsync(() -> "");
 
     for (BusService service : services.keySet()) {
-      Set<BusStop> stops = services.get(service);
-      result += describeService(service, stops);
+      CompletableFuture<String> stops = services.get(service)
+                 .thenApply(x -> describeService(service, x));
+      
+      identity.thenCombine(identity, (x, y) -> x + y);
+
     }
-    return result;
+/*
+   CompletableFuture.supplyAsync(result);
+   
+   CompletableFuture<String> = stops.thenApply(x -> describeService(service, x));
+
+   thenCombine("", (x, y) -> x + describeService() )
+*/
+    return CFResult.thenCombine(CFResult, (x, y) -> x + y);
   }
 
   /**

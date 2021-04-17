@@ -2,6 +2,7 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Encapsulate a bus stop with a unique String id, the location (in long, lat),
@@ -54,6 +55,17 @@ class BusStop {
     // Thread.sleep(200);
     // bus services that visit this stop
 
+    return 
+    BusAPI.getBusServicesAt(stopId)
+      .<Scanner>thenApply(x -> new Scanner(x))
+      .<Set<BusService>>thenApply(x -> x
+                         .useDelimiter("\n")
+                         .tokens()
+                         .skip(1)
+                         .flatMap(line -> Stream.of(line.split(",")))
+                         .map(id -> new BusService(id))
+                         .collect(Collectors.toSet()));
+        /*
     Scanner sc = new Scanner(BusAPI.getBusServicesAt(stopId));
     Set<BusService> busServices = sc
         .useDelimiter("\n")
@@ -63,7 +75,7 @@ class BusStop {
         .map(id -> new BusService(id))
         .collect(Collectors.toSet());
     sc.close();
-    return busServices;
+    return busServices;*/
   }
 
   /**

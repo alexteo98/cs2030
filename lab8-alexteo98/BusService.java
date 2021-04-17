@@ -56,7 +56,6 @@ class BusService {
    * @return A list of bus stops matching the given name.
    */
   public CompletableFuture<Set<BusStop>> findStopsWith(String name) {
-    
     return
       getBusStops().thenApply(x -> x.stream())
                    .thenApply(x -> x.filter(stop -> stop.matchName(name)))

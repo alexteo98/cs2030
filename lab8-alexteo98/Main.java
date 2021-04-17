@@ -18,7 +18,7 @@ public class Main {
    * program would quit with an error message.
    * @param args Command line arguments
    */
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Throwable{
     Instant start = Instant.now();
     try {
       Scanner sc = createScanner(args);
@@ -26,9 +26,13 @@ public class Main {
         BusStop srcId = new BusStop(sc.next());
         String searchString = sc.next();
         CompletableFuture.allOf(BusSg.findBusServicesBetween(srcId, searchString)
-            .thenCompose(x -> x.description())
-            .thenAccept(x -> System.out.println(x)));
+            .thenApply(x -> x.description())
+            .join() 
+            .thenAccept(x -> System.out.println(x))).get();
+            
      //   System.out.println(BusSg.findBusServicesBetween(srcId, searchString).description());
+     //
+//        System.out.println("yo");
       }
       sc.close();
     } catch (FileNotFoundException exception) {

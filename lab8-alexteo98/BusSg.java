@@ -21,20 +21,18 @@ class BusSg {
    * @return The (optional) bus routes between the stops.
    */
   public static CompletableFuture<BusRoutes> findBusServicesBetween(BusStop stop, String searchString) {
-
-    return 
-      CompletableFuture.supplyAsync(() -> new BusRoutes(stop, searchString, 
+    return CompletableFuture.supplyAsync(() -> new BusRoutes(stop, searchString, 
     stop.getBusServices().thenApply(x -> x.stream())
                          .thenApply(x -> x
                                    .collect(Collectors.toMap(
                                                   service -> service, 
-                                                  service -> service.findStopsWith(searchString)))
-                                   )
+                                                  service -> service.findStopsWith(searchString))))
                          .exceptionally(t -> {
                               System.out.println("Unable to complete query: " + t);
                               return Map.of();})));
 
 
+    
 /*
     try {
       Map<BusService, CompletableFuture<Set<BusStop>>> validServices = stop.getBusServices().stream()

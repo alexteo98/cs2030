@@ -41,8 +41,8 @@ class BusAPI {
    *     query fails.
    */
   private static CompletableFuture<String> httpGet(String url) {
-    HttpClient client = HttpClient.newBuilder()
-      .build();
+    HttpClient client = HttpClient.newBuilder().build();
+
     HttpRequest request = HttpRequest.newBuilder()
       .uri(URI.create(url))
       .build();
@@ -88,6 +88,7 @@ class BusAPI {
    *     string if the API query failed.
    */ 
   public static CompletableFuture<String> getBusServicesAt(String stopId) {
-    return httpGet(BUS_STOP_API + stopId);
+
+    return httpGet(String.format("%s%s", BUS_STOP_API, stopId));
   }
 }

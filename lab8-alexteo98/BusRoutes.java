@@ -38,41 +38,26 @@ class BusRoutes {
   public CompletableFuture<String> description() {
     String result = "Search for: " + this.stop + " <-> " + name + ":\n" + "From " +  this.stop + "\n";
 
+
     CompletableFuture<String> CFResult = CompletableFuture.<String>supplyAsync(() -> result);
-    /*    CompletableFuture<String> identity = CompletableFuture.<String>supplyAsync(() -> "");
-
-          for (BusService service : services.keySet()) {
-          CompletableFuture<String> stops = services.get(service)
-          .thenApply(x -> describeService(service, x));
-
-          identity.thenCombine(identity, (x, y) -> x + y);
-
-          }*/
-
-   /* CompletableFuture<String> decompose(Map<BusService, CompletableFuture<Set<BusStop>>> services) { 
-      CompletableFuture<String> identity = CompletableFuture.<String>supplyAsync(() -> "");
-
-      for (BusService service : services.keySet()) {
-        CompletableFuture<String> stops = services.get(service)
-          .thenApply(x -> describeService(service, x));
-
-        identity.thenCombine(identity, (x, y) -> x + y);
-        return identity;
-      }
-    }*/
-return
+return CFResult.thenCombine(
     this.services.<String>thenCompose(x -> { 
-      CompletableFuture<String> identity = CompletableFuture.<String>supplyAsync(() -> "");
+   //   CompletableFuture<String> identity = CompletableFuture.<String>supplyAsync(() -> "");
+      CompletableFuture<String> stops = CompletableFuture.<String>supplyAsync(() -> "");
 
       for (BusService service : x.keySet()) {
-        CompletableFuture<String> stops = x.get(service)
-          .thenApply(y -> describeService(service, y));
+        //works
+        stops = x.get(service)
+          .thenApply(y -> describeService(service, y))
+          .thenCombine(stops, (a, b) -> a + b);
+
+      //  System.out.println(stops.join());//-------------------------------------------
       }
-        identity.thenCombine(identity, (a, b) -> a + b);
-        return identity;
-      
-    })
-                 .thenCombine(CFResult, (x, y) -> x + y);
+      //  identity.thenCombine(identity, (a, b) -> a + b);
+       // System.out.println(identity.join());
+        return stops; 
+    }), (x, y) -> x + y);
+               //  .thenCombine(CFResult, (x, y) -> x + y);
 
     /*
        CompletableFuture.supplyAsync(result);
@@ -91,6 +76,7 @@ return
    *     the bus services and matching stops served.
    */
   public String describeService(BusService service, Set<BusStop> stops) {
+
     if (stops.isEmpty()) {
       return "";
     } 

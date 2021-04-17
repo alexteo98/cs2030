@@ -56,8 +56,7 @@ class BusStop {
     // bus services that visit this stop
 
 
-    return 
-    BusAPI.getBusServicesAt(stopId)
+    return BusAPI.getBusServicesAt(stopId)
       .<Scanner>thenApply(x -> new Scanner(x))
       .<Set<BusService>>thenApply(x -> x
                          .useDelimiter("\n")

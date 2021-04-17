@@ -27,9 +27,9 @@ public class Main {
         String searchString = sc.next();
         CompletableFuture.allOf(BusSg.findBusServicesBetween(srcId, searchString)
             .thenApply(x -> x.description())
-            .join() 
+            .join()            
             .thenAccept(x -> System.out.println(x))).get();
-            
+
      //   System.out.println(BusSg.findBusServicesBetween(srcId, searchString).description());
      //
 //        System.out.println("yo");

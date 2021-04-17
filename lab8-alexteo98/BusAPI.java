@@ -23,14 +23,14 @@ class BusAPI {
    * An alternative is "https://www.comp.nus.edu.sg/~ooiwt/bus_services/"
    */
   private static final String BUS_SERVICE_API = 
-      "https://cs2030-bus-api.herokuapp.com/bus_services/";
+    "https://cs2030-bus-api.herokuapp.com/bus_services/";
 
   /** 
    * URL to query for bus services. 
    * An alternative is "https://www.comp.nus.edu.sg/~ooiwt/bus_stops/"
    **/
   private static final String BUS_STOP_API = 
-      "https://cs2030-bus-api.herokuapp.com/bus_stops/";
+    "https://cs2030-bus-api.herokuapp.com/bus_stops/";
 
   /**
    * Given a URL, synchrnously obtained the HTTP response string
@@ -42,22 +42,31 @@ class BusAPI {
    */
   private static CompletableFuture<String> httpGet(String url) {
     HttpClient client = HttpClient.newBuilder()
-        .build();
+      .build();
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(url))
-        .build();
+      .uri(URI.create(url))
+      .build();
     CompletableFuture<HttpResponse<String>> response;
 
-      response = client.sendAsync(request, BodyHandlers.ofString()); // TODO 
+    response = client.sendAsync(request, BodyHandlers.ofString());
 
-
-    if (response.thenApply(x -> x.statusCode()).equals(CompletableFuture.supplyAsync(() -> 200)) == false) { 
-      CompletableFuture<String> s = CompletableFuture.supplyAsync(() -> "");
-      System.out.println(response.thenCombine(s, (x, y) -> x + y) + " " + response.thenCombine(s, (x, y) -> x.statusCode()+y));
-        return s;
-    } else  { 
-        return response.thenApply(x -> x.body());
-    }
+    /*
+       if (response.thenApply(x -> x.statusCode()).equals(CompletableFuture.supplyAsync(() -> 200)) == false) { 
+       CompletableFuture<String> s = CompletableFuture.supplyAsync(() -> "");
+       System.out.println(
+       response.thenCombine(s, (x, y) -> x + y) + " " + response.thenCombine(s, (x, y) -> x.statusCode()+y));
+       return s;
+       } else  { 
+       return response.thenApply(x -> x.body());
+       }
+       */
+    return response.<String>thenApply(x -> {
+      if (x.statusCode() == 200) {
+        return x.body();
+      } else {
+        System.out.println(x + " " + x.statusCode());
+        return "";
+      }});
   }
 
   /**

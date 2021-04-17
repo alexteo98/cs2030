@@ -50,7 +50,7 @@ class BusStop {
    * a set.  Query the web server.
    * @return A set of BusService that serve this bus stop.
    */
-  public Set<BusService> getBusServices() {
+  public CompletableFuture<Set<BusService>> getBusServices() {
     // Thread.sleep(200);
     // bus services that visit this stop
 

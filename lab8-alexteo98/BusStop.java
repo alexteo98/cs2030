@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -7,8 +8,8 @@ import java.util.stream.Stream;
  * Encapsulate a bus stop with a unique String id, the location (in long, lat),
  * and human friendly name.
  *
- * @author: Ooi Wei Tsang
- * @version: CS2030S AY20/21 Semester 2, Lab 8
+ * @author: Alex Teo
+ * @version: CS2030S AY20/21 Semester 2, Lab 16A
  */
 class BusStop {
   /** A unique String id. */
@@ -50,20 +51,17 @@ class BusStop {
    * a set.  Query the web server.
    * @return A set of BusService that serve this bus stop.
    */
-  public Set<BusService> getBusServices() {
-    // Thread.sleep(200);
-    // bus services that visit this stop
-
-    Scanner sc = new Scanner(BusAPI.getBusServicesAt(stopId));
-    Set<BusService> busServices = sc
-        .useDelimiter("\n")
-        .tokens()
-        .skip(1) // skip first line
-        .flatMap(line -> Stream.of(line.split(",")))
-        .map(id -> new BusService(id))
-        .collect(Collectors.toSet());
-    sc.close();
-    return busServices;
+  public CompletableFuture<Set<BusService>> getBusServices() {
+    
+    return BusAPI.getBusServicesAt(stopId)
+      .<Scanner>thenApply(x -> new Scanner(x))
+      .<Set<BusService>>thenApply(x -> x
+                         .useDelimiter("\n")
+                         .tokens()
+                         .skip(1)
+                         .flatMap(line -> Stream.of(line.split(",")))
+                         .map(id -> new BusService(id))
+                         .collect(Collectors.toSet()));
   }
 
   /**
